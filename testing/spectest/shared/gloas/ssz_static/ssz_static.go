@@ -1,11 +1,14 @@
 package ssz_static
 
 import (
+	"context"
 	"errors"
 	"testing"
 
+	state_native "github.com/OffchainLabs/prysm/v6/beacon-chain/state/state-native"
 	enginev1 "github.com/OffchainLabs/prysm/v6/proto/engine/v1"
 	ethpb "github.com/OffchainLabs/prysm/v6/proto/prysm/v1alpha1"
+	"github.com/OffchainLabs/prysm/v6/testing/require"
 	common "github.com/OffchainLabs/prysm/v6/testing/spectest/shared/common/ssz_static"
 	fssz "github.com/prysmaticlabs/fastssz"
 )
@@ -16,8 +19,18 @@ func RunSSZStaticTests(t *testing.T, config string) {
 }
 
 func customHtr(t *testing.T, htrs []common.HTR, object interface{}) []common.HTR {
-	// TODO: Add custom HTR for BeaconStateGloas when state-native support is implemented
-	// For now, only use the default fastssz HTR methods
+	_, ok := object.(*ethpb.BeaconStateGloas)
+	if !ok {
+		return htrs
+	}
+
+	htrs = append(htrs, func(s interface{}) ([32]byte, error) {
+		beaconState, err := state_native.InitializeFromProtoGloas(s.(*ethpb.BeaconStateGloas))
+		require.NoError(t, err)
+
+		return beaconState.HashTreeRoot(context.Background())
+	})
+
 	return htrs
 }
 
