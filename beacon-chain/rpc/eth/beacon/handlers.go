@@ -334,7 +334,7 @@ func (s *Server) GetBlockAttestationsV2(w http.ResponseWriter, r *http.Request) 
 	consensusAtts := blk.Block().Body().Attestations()
 
 	v := blk.Block().Version()
-	attStructs := make([]interface{}, len(consensusAtts))
+	attStructs := make([]any, len(consensusAtts))
 	if v >= version.Electra {
 		for index, att := range consensusAtts {
 			a, ok := att.(*eth.AttestationElectra)
@@ -961,7 +961,7 @@ func (s *Server) proposeBlock(ctx context.Context, w http.ResponseWriter, blk *e
 	}
 }
 
-func unmarshalStrict(data []byte, v interface{}) error {
+func unmarshalStrict(data []byte, v any) error {
 	dec := json.NewDecoder(bytes.NewReader(data))
 	dec.DisallowUnknownFields()
 	return dec.Decode(v)

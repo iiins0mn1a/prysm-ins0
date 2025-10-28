@@ -124,7 +124,7 @@ func TestExpectedWithdrawals(t *testing.T) {
 		valCount := 17
 		validators := make([]*eth.Validator, 0, valCount)
 		balances := make([]uint64, 0, valCount)
-		for i := 0; i < valCount; i++ {
+		for range valCount {
 			blsKey, err := bls.RandKey()
 			require.NoError(t, err)
 			val := &eth.Validator{

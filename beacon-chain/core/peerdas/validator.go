@@ -210,7 +210,7 @@ func rotateRowsToCols(rows []kzg.CellsAndProofs, numCols uint64) ([][][]byte, []
 		if len(cp.Cells) != len(cp.Proofs) {
 			return nil, nil, errors.Wrap(ErrNotEnoughDataColumnSidecars, "not enough proofs")
 		}
-		for j := uint64(0); j < numCols; j++ {
+		for j := range numCols {
 			if i == 0 {
 				cellCols[j] = make([][]byte, len(rows))
 				proofCols[j] = make([][]byte, len(rows))

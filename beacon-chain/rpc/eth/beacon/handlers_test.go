@@ -62,7 +62,7 @@ func fillDBTestBlocks(ctx context.Context, t *testing.T, beaconDB db.Database) (
 	count := primitives.Slot(100)
 	blks := make([]interfaces.ReadOnlySignedBeaconBlock, count)
 	blkContainers := make([]*eth.BeaconBlockContainer, count)
-	for i := primitives.Slot(0); i < count; i++ {
+	for i := range count {
 		b := util.NewBeaconBlock()
 		b.Block.Slot = i
 		b.Block.ParentRoot = bytesutil.PadTo([]byte{uint8(i)}, 32)
@@ -4997,7 +4997,7 @@ func Test_validateBlobs(t *testing.T) {
 		fuluBlobs := make([][]byte, blobCount)
 		var kzgBlobs []kzg.Blob
 
-		for i := 0; i < blobCount; i++ {
+		for i := range blobCount {
 			blob := util.GetRandBlob(int64(i))
 			fuluBlobs[i] = blob[:]
 			var kzgBlob kzg.Blob
@@ -5017,11 +5017,11 @@ func Test_validateBlobs(t *testing.T) {
 		// Generate cell proofs for the blobs (flattened format like execution client)
 		numberOfColumns := params.BeaconConfig().NumberOfColumns
 		cellProofs := make([][]byte, uint64(blobCount)*numberOfColumns)
-		for blobIdx := 0; blobIdx < blobCount; blobIdx++ {
+		for blobIdx := range blobCount {
 			cellsAndProofs, err := kzg.ComputeCellsAndKZGProofs(&kzgBlobs[blobIdx])
 			require.NoError(t, err)
 
-			for colIdx := uint64(0); colIdx < numberOfColumns; colIdx++ {
+			for colIdx := range numberOfColumns {
 				cellProofIdx := uint64(blobIdx)*numberOfColumns + colIdx
 				cellProofs[cellProofIdx] = cellsAndProofs.Proofs[colIdx][:]
 			}
@@ -5040,7 +5040,7 @@ func Test_validateBlobs(t *testing.T) {
 		blobCount := 2
 		commitments := make([][]byte, blobCount)
 		fuluBlobs := make([][]byte, blobCount)
-		for i := 0; i < blobCount; i++ {
+		for i := range blobCount {
 			blob := util.GetRandBlob(int64(i))
 			fuluBlobs[i] = blob[:]
 
@@ -5209,7 +5209,7 @@ func TestGetPendingConsolidations(t *testing.T) {
 		consolidationSize := (&eth.PendingConsolidation{}).SizeSSZ()
 		require.Equal(t, len(responseBytes), consolidationSize*len(cs))
 
-		for i := 0; i < len(cs); i++ {
+		for i := range cs {
 			start := i * consolidationSize
 			end := start + consolidationSize
 
@@ -5335,7 +5335,7 @@ func TestGetPendingDeposits(t *testing.T) {
 
 	validators := st.Validators()
 	dummySig := make([]byte, 96)
-	for j := 0; j < 96; j++ {
+	for j := range 96 {
 		dummySig[j] = byte(j)
 	}
 	deps := make([]*eth.PendingDeposit, 10)
@@ -5402,7 +5402,7 @@ func TestGetPendingDeposits(t *testing.T) {
 		depositSize := (&eth.PendingDeposit{}).SizeSSZ()
 		require.Equal(t, len(responseBytes), depositSize*len(deps))
 
-		for i := 0; i < len(deps); i++ {
+		for i := range deps {
 			start := i * depositSize
 			end := start + depositSize
 
@@ -5589,7 +5589,7 @@ func TestGetPendingPartialWithdrawals(t *testing.T) {
 		withdrawalSize := (&eth.PendingPartialWithdrawal{}).SizeSSZ()
 		require.Equal(t, len(responseBytes), withdrawalSize*len(withdrawals))
 
-		for i := 0; i < len(withdrawals); i++ {
+		for i := range withdrawals {
 			start := i * withdrawalSize
 			end := start + withdrawalSize
 
@@ -5719,7 +5719,7 @@ func TestGetProposerLookahead(t *testing.T) {
 	st, _ := util.DeterministicGenesisStateFulu(t, uint64(numValidators))
 	lookaheadSize := int(params.BeaconConfig().MinSeedLookahead+1) * int(params.BeaconConfig().SlotsPerEpoch)
 	lookahead := make([]primitives.ValidatorIndex, lookaheadSize)
-	for i := 0; i < lookaheadSize; i++ {
+	for i := range lookaheadSize {
 		lookahead[i] = primitives.ValidatorIndex(i % numValidators) // Cycle through validators
 	}
 
@@ -5757,7 +5757,7 @@ func TestGetProposerLookahead(t *testing.T) {
 
 		// Verify the data
 		require.Equal(t, lookaheadSize, len(resp.Data))
-		for i := 0; i < lookaheadSize; i++ {
+		for i := range lookaheadSize {
 			expectedIdx := strconv.FormatUint(uint64(i%numValidators), 10)
 			require.Equal(t, expectedIdx, resp.Data[i])
 		}
@@ -5778,7 +5778,7 @@ func TestGetProposerLookahead(t *testing.T) {
 		require.Equal(t, len(responseBytes), validatorIndexSize*lookaheadSize)
 
 		recoveredIndices := make([]primitives.ValidatorIndex, lookaheadSize)
-		for i := 0; i < lookaheadSize; i++ {
+		for i := range lookaheadSize {
 			start := i * validatorIndexSize
 			end := start + validatorIndexSize
 
