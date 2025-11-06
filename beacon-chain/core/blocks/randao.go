@@ -2,6 +2,8 @@ package blocks
 
 import (
 	"context"
+	"fmt"
+	"time"
 
 	"github.com/pkg/errors"
 	"github.com/prysmaticlabs/prysm/v5/beacon-chain/state"
@@ -32,6 +34,7 @@ func ProcessRandao(
 	beaconState state.BeaconState,
 	b interfaces.ReadOnlySignedBeaconBlock,
 ) (state.BeaconState, error) {
+	fmt.Printf("[SPEC_CALL] ProcessRandao %d\n", time.Now().UnixNano())
 	if err := blocks.BeaconBlockIsNil(b); err != nil {
 		return nil, err
 	}

@@ -6,10 +6,12 @@ package validators
 
 import (
 	"context"
+	"fmt"
+	"time"
 
 	"github.com/pkg/errors"
 	"github.com/prysmaticlabs/prysm/v5/beacon-chain/core/helpers"
-	"github.com/prysmaticlabs/prysm/v5/beacon-chain/core/time"
+	beacontime "github.com/prysmaticlabs/prysm/v5/beacon-chain/core/time"
 	"github.com/prysmaticlabs/prysm/v5/beacon-chain/state"
 	"github.com/prysmaticlabs/prysm/v5/config/params"
 	"github.com/prysmaticlabs/prysm/v5/consensus-types/primitives"
@@ -82,12 +84,12 @@ func InitiateValidatorExit(ctx context.Context, s state.BeaconState, idx primiti
 		//	exit_queue_churn = len([v for v in state.validators if v.exit_epoch == exit_queue_epoch])
 		//	if exit_queue_churn >= get_validator_churn_limit(state):
 		//	    exit_queue_epoch += Epoch(1)
-		exitableEpoch := helpers.ActivationExitEpoch(time.CurrentEpoch(s))
+		exitableEpoch := helpers.ActivationExitEpoch(beacontime.CurrentEpoch(s))
 		if exitableEpoch > exitQueueEpoch {
 			exitQueueEpoch = exitableEpoch
 			churn = 0
 		}
-		activeValidatorCount, err := helpers.ActiveValidatorCount(ctx, s, time.CurrentEpoch(s))
+		activeValidatorCount, err := helpers.ActiveValidatorCount(ctx, s, beacontime.CurrentEpoch(s))
 		if err != nil {
 			return nil, 0, errors.Wrap(err, "could not get active validator count")
 		}
@@ -153,6 +155,7 @@ func SlashValidator(
 	ctx context.Context,
 	s state.BeaconState,
 	slashedIdx primitives.ValidatorIndex) (state.BeaconState, error) {
+	fmt.Printf("[SPEC_CALL] SlashValidator %d\n", time.Now().UnixNano())
 	maxExitEpoch, churn := MaxExitEpochAndChurn(s)
 	s, _, err := InitiateValidatorExit(ctx, s, slashedIdx, maxExitEpoch, churn)
 	if err != nil && !errors.Is(err, ErrValidatorAlreadyExited) {

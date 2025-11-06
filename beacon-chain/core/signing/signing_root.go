@@ -1,7 +1,9 @@
 package signing
 
 import (
+	"fmt"
 	"sync"
+	"time"
 
 	"github.com/pkg/errors"
 	fssz "github.com/prysmaticlabs/fastssz"
@@ -95,6 +97,7 @@ func ComputeDomainAndSignWithoutState(fork *ethpb.Fork, epoch primitives.Epoch, 
 //	       domain=domain,
 //	   ))
 func ComputeSigningRoot(object fssz.HashRoot, domain []byte) ([32]byte, error) {
+	fmt.Printf("[SPEC_CALL] ComputeSigningRoot %d\n", time.Now().UnixNano())
 	return Data(object.HashTreeRoot, domain)
 }
 
@@ -268,6 +271,7 @@ func domain(domainType [DomainByteLength]byte, forkDataRoot []byte) []byte {
 //	       genesis_validators_root=genesis_validators_root,
 //	   ))
 func computeForkDataRoot(version, root []byte) ([32]byte, error) {
+	// fmt.Printf("[SPEC_CALL] computeForkDataRoot %d\n", time.Now().UnixNano())
 	digestMapLock.RLock()
 	if val, ok := digestMap[string(version)+string(root)]; ok {
 		digestMapLock.RUnlock()
@@ -302,6 +306,7 @@ func computeForkDataRoot(version, root []byte) ([32]byte, error) {
 //	   """
 //	   return ForkDigest(compute_fork_data_root(current_version, genesis_validators_root)[:4])
 func ComputeForkDigest(version, genesisValidatorsRoot []byte) ([4]byte, error) {
+	// fmt.Printf("[SPEC_CALL] ComputeForkDigest %d\n", time.Now().UnixNano())
 	dataRoot, err := computeForkDataRoot(version, genesisValidatorsRoot)
 	if err != nil {
 		return [4]byte{}, err

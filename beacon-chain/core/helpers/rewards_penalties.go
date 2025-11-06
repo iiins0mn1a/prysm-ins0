@@ -2,6 +2,8 @@ package helpers
 
 import (
 	"errors"
+	"fmt"
+	"time"
 
 	"github.com/prysmaticlabs/prysm/v5/beacon-chain/cache"
 	"github.com/prysmaticlabs/prysm/v5/beacon-chain/state"
@@ -56,6 +58,7 @@ func TotalBalance(state state.ReadOnlyValidators, indices []primitives.Validator
 //	 """
 //	 return get_total_balance(state, set(get_active_validator_indices(state, get_current_epoch(state))))
 func TotalActiveBalance(s state.ReadOnlyBeaconState) (uint64, error) {
+	fmt.Printf("[SPEC_CALL] TotalActiveBalance %d\n", time.Now().UnixNano())
 	bal, err := balanceCache.Get(s)
 	switch {
 	case err == nil:

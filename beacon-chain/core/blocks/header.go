@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/prysmaticlabs/prysm/v5/beacon-chain/core/helpers"
 	"github.com/prysmaticlabs/prysm/v5/beacon-chain/state"
@@ -44,6 +45,7 @@ func ProcessBlockHeader(
 	beaconState state.BeaconState,
 	block interfaces.ReadOnlySignedBeaconBlock,
 ) (state.BeaconState, error) {
+	fmt.Printf("[SPEC_CALL] ProcessBlockHeader %d\n", time.Now().UnixNano())
 	if err := blocks.BeaconBlockIsNil(block); err != nil {
 		return nil, err
 	}

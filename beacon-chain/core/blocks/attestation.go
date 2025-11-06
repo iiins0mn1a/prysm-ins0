@@ -3,11 +3,12 @@ package blocks
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/pkg/errors"
 	"github.com/prysmaticlabs/prysm/v5/beacon-chain/core/helpers"
 	"github.com/prysmaticlabs/prysm/v5/beacon-chain/core/signing"
-	"github.com/prysmaticlabs/prysm/v5/beacon-chain/core/time"
+	beacontime "github.com/prysmaticlabs/prysm/v5/beacon-chain/core/time"
 	"github.com/prysmaticlabs/prysm/v5/beacon-chain/state"
 	"github.com/prysmaticlabs/prysm/v5/config/params"
 	"github.com/prysmaticlabs/prysm/v5/consensus-types/blocks"
@@ -54,8 +55,8 @@ func VerifyAttestationNoVerifySignature(
 	if err := helpers.ValidateNilAttestation(att); err != nil {
 		return err
 	}
-	currEpoch := time.CurrentEpoch(beaconState)
-	prevEpoch := time.PrevEpoch(beaconState)
+	currEpoch := beacontime.CurrentEpoch(beaconState)
+	prevEpoch := beacontime.PrevEpoch(beaconState)
 	data := att.GetData()
 	if data.Target.Epoch != prevEpoch && data.Target.Epoch != currEpoch {
 		return fmt.Errorf(
@@ -178,7 +179,7 @@ func ProcessAttestationNoVerifySignature(
 		return nil, err
 	}
 
-	currEpoch := time.CurrentEpoch(beaconState)
+	currEpoch := beacontime.CurrentEpoch(beaconState)
 	data := att.GetData()
 	s := att.GetData().Slot
 	proposerIndex, err := helpers.BeaconProposerIndex(ctx, beaconState)
@@ -223,6 +224,7 @@ func ProcessAttestationNoVerifySignature(
 //	  signing_root = compute_signing_root(indexed_attestation.data, domain)
 //	  return bls.FastAggregateVerify(pubkeys, signing_root, indexed_attestation.signature)
 func VerifyIndexedAttestation(ctx context.Context, beaconState state.ReadOnlyBeaconState, indexedAtt ethpb.IndexedAtt) error {
+	fmt.Printf("[SPEC_CALL] VerifyIndexedAttestation %d\n", time.Now().UnixNano())
 	ctx, span := trace.StartSpan(ctx, "core.VerifyIndexedAttestation")
 	defer span.End()
 

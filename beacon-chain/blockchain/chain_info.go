@@ -3,6 +3,7 @@ package blockchain
 import (
 	"bytes"
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/pkg/errors"
@@ -489,6 +490,7 @@ func (s *Service) TargetRootForEpoch(root [32]byte, epoch primitives.Epoch) ([32
 //	     # root is older than queried slot, thus a skip slot. Return most recent root prior to slot
 //	     return root
 func (s *Service) Ancestor(ctx context.Context, root []byte, slot primitives.Slot) ([]byte, error) {
+	fmt.Printf("[SPEC_CALL] Ancestor %d\n", time.Now().UnixNano())
 	ctx, span := trace.StartSpan(ctx, "blockChain.ancestor")
 	defer span.End()
 

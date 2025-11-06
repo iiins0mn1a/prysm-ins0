@@ -6,11 +6,12 @@ import (
 	"context"
 	"fmt"
 	"sort"
+	"time"
 
 	"github.com/pkg/errors"
 	"github.com/prysmaticlabs/go-bitfield"
 	"github.com/prysmaticlabs/prysm/v5/beacon-chain/cache"
-	"github.com/prysmaticlabs/prysm/v5/beacon-chain/core/time"
+	beacontime "github.com/prysmaticlabs/prysm/v5/beacon-chain/core/time"
 	forkchoicetypes "github.com/prysmaticlabs/prysm/v5/beacon-chain/forkchoice/types"
 	"github.com/prysmaticlabs/prysm/v5/beacon-chain/state"
 	fieldparams "github.com/prysmaticlabs/prysm/v5/config/fieldparams"
@@ -142,6 +143,7 @@ func BeaconCommittees(ctx context.Context, state state.ReadOnlyBeaconState, slot
 //	     count=committees_per_slot * SLOTS_PER_EPOCH,
 //	 )
 func BeaconCommitteeFromState(ctx context.Context, state state.ReadOnlyBeaconState, slot primitives.Slot, committeeIndex primitives.CommitteeIndex) ([]primitives.ValidatorIndex, error) {
+	fmt.Printf("[SPEC_CALL] BeaconCommitteeFromState %d\n", time.Now().UnixNano())
 	epoch := slots.ToEpoch(slot)
 	seed, err := Seed(state, epoch, params.BeaconConfig().DomainBeaconAttester)
 	if err != nil {
@@ -189,6 +191,7 @@ func BeaconCommittee(
 	slot primitives.Slot,
 	committeeIndex primitives.CommitteeIndex,
 ) ([]primitives.ValidatorIndex, error) {
+	fmt.Printf("[SPEC_CALL] BeaconCommittee %d\n", time.Now().UnixNano())
 	committee, err := committeeCache.Committee(ctx, slot, seed, committeeIndex)
 	if err != nil {
 		return nil, errors.Wrap(err, "could not interface with committee cache")
@@ -219,7 +222,7 @@ type CommitteeAssignment struct {
 // It checks if the epoch is not greater than the next epoch, and if the start slot of the epoch is greater
 // than or equal to the minimum valid start slot calculated based on the state's current slot and historical roots.
 func verifyAssignmentEpoch(epoch primitives.Epoch, state state.BeaconState) error {
-	nextEpoch := time.NextEpoch(state)
+	nextEpoch := beacontime.NextEpoch(state)
 	if epoch > nextEpoch {
 		return fmt.Errorf("epoch %d can't be greater than next epoch %d", epoch, nextEpoch)
 	}
@@ -508,6 +511,7 @@ func ComputeCommittee(
 	seed [32]byte,
 	index, count uint64,
 ) ([]primitives.ValidatorIndex, error) {
+	fmt.Printf("[SPEC_CALL] ComputeCommittee %d\n", time.Now().UnixNano())
 	validatorCount := uint64(len(indices))
 	start := slice.SplitOffset(validatorCount, count, index)
 	end := slice.SplitOffset(validatorCount, count, index+1)

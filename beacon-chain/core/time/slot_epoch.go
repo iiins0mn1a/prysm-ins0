@@ -1,6 +1,9 @@
 package time
 
 import (
+	"fmt"
+	"time"
+
 	"github.com/prysmaticlabs/prysm/v5/beacon-chain/state"
 	"github.com/prysmaticlabs/prysm/v5/config/params"
 	"github.com/prysmaticlabs/prysm/v5/consensus-types/primitives"
@@ -19,6 +22,7 @@ import (
 //	  """
 //	  return compute_epoch_at_slot(state.slot)
 func CurrentEpoch(state state.ReadOnlyBeaconState) primitives.Epoch {
+	fmt.Printf("[SPEC_CALL] CurrentEpoch %d\n", time.Now().UnixNano())
 	return slots.ToEpoch(state.Slot())
 }
 
@@ -35,6 +39,7 @@ func CurrentEpoch(state state.ReadOnlyBeaconState) primitives.Epoch {
 //	  current_epoch = get_current_epoch(state)
 //	  return GENESIS_EPOCH if current_epoch == GENESIS_EPOCH else Epoch(current_epoch - 1)
 func PrevEpoch(state state.ReadOnlyBeaconState) primitives.Epoch {
+	fmt.Printf("[SPEC_CALL] PrevEpoch %d\n", time.Now().UnixNano())
 	currentEpoch := CurrentEpoch(state)
 	if currentEpoch == 0 {
 		return 0

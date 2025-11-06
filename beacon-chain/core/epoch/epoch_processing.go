@@ -8,10 +8,11 @@ import (
 	"context"
 	"fmt"
 	"sort"
+	"time"
 
 	"github.com/pkg/errors"
 	"github.com/prysmaticlabs/prysm/v5/beacon-chain/core/helpers"
-	"github.com/prysmaticlabs/prysm/v5/beacon-chain/core/time"
+	beacontime "github.com/prysmaticlabs/prysm/v5/beacon-chain/core/time"
 	"github.com/prysmaticlabs/prysm/v5/beacon-chain/core/validators"
 	"github.com/prysmaticlabs/prysm/v5/beacon-chain/state"
 	"github.com/prysmaticlabs/prysm/v5/beacon-chain/state/stateutil"
@@ -48,7 +49,7 @@ import (
 //	     validator = state.validators[index]
 //	     validator.activation_epoch = compute_activation_exit_epoch(get_current_epoch(state))
 func ProcessRegistryUpdates(ctx context.Context, st state.BeaconState) (state.BeaconState, error) {
-	currentEpoch := time.CurrentEpoch(st)
+	currentEpoch := beacontime.CurrentEpoch(st)
 	var err error
 	ejectionBal := params.BeaconConfig().EjectionBalance
 
@@ -83,7 +84,7 @@ func ProcessRegistryUpdates(ctx context.Context, st state.BeaconState) (state.Be
 	}
 
 	// Process validators for activation eligibility.
-	activationEligibilityEpoch := time.CurrentEpoch(st) + 1
+	activationEligibilityEpoch := beacontime.CurrentEpoch(st) + 1
 	for _, idx := range eligibleForActivationQ {
 		v, err := st.ValidatorAtIndex(idx)
 		if err != nil {
@@ -154,7 +155,7 @@ func ProcessRegistryUpdates(ctx context.Context, st state.BeaconState) (state.Be
 //	          penalty = penalty_numerator // total_balance * increment
 //	          decrease_balance(state, ValidatorIndex(index), penalty)
 func ProcessSlashings(st state.BeaconState, slashingMultiplier uint64) (state.BeaconState, error) {
-	currentEpoch := time.CurrentEpoch(st)
+	currentEpoch := beacontime.CurrentEpoch(st)
 	totalBalance, err := helpers.TotalActiveBalance(st)
 	if err != nil {
 		return nil, errors.Wrap(err, "could not get total active balance")
@@ -210,7 +211,7 @@ func ProcessSlashings(st state.BeaconState, slashingMultiplier uint64) (state.Be
 //	  if next_epoch % EPOCHS_PER_ETH1_VOTING_PERIOD == 0:
 //	      state.eth1_data_votes = []
 func ProcessEth1DataReset(state state.BeaconState) (state.BeaconState, error) {
-	currentEpoch := time.CurrentEpoch(state)
+	currentEpoch := beacontime.CurrentEpoch(state)
 	nextEpoch := currentEpoch + 1
 
 	// Reset ETH1 data votes.
@@ -287,7 +288,7 @@ func ProcessEffectiveBalanceUpdates(st state.BeaconState) (state.BeaconState, er
 //	  # Reset slashings
 //	  state.slashings[next_epoch % EPOCHS_PER_SLASHINGS_VECTOR] = Gwei(0)
 func ProcessSlashingsReset(state state.BeaconState) (state.BeaconState, error) {
-	currentEpoch := time.CurrentEpoch(state)
+	currentEpoch := beacontime.CurrentEpoch(state)
 	nextEpoch := currentEpoch + 1
 
 	// Set total slashed balances.
@@ -318,7 +319,8 @@ func ProcessSlashingsReset(state state.BeaconState) (state.BeaconState, error) {
 //	  # Set randao mix
 //	  state.randao_mixes[next_epoch % EPOCHS_PER_HISTORICAL_VECTOR] = get_randao_mix(state, current_epoch)
 func ProcessRandaoMixesReset(state state.BeaconState) (state.BeaconState, error) {
-	currentEpoch := time.CurrentEpoch(state)
+	fmt.Printf("[SPEC_CALL] ProcessRandaoMixesReset %d\n", time.Now().UnixNano())
+	currentEpoch := beacontime.CurrentEpoch(state)
 	nextEpoch := currentEpoch + 1
 
 	// Set RANDAO mix.
@@ -344,7 +346,7 @@ func ProcessRandaoMixesReset(state state.BeaconState) (state.BeaconState, error)
 // ProcessHistoricalDataUpdate processes the updates to historical data during epoch processing.
 // From Capella onward, per spec,state's historical summaries are updated instead of historical roots.
 func ProcessHistoricalDataUpdate(state state.BeaconState) (state.BeaconState, error) {
-	currentEpoch := time.CurrentEpoch(state)
+	currentEpoch := beacontime.CurrentEpoch(state)
 	nextEpoch := currentEpoch + 1
 
 	// Set historical root accumulator.

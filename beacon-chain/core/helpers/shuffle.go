@@ -3,6 +3,7 @@ package helpers
 import (
 	"encoding/binary"
 	"fmt"
+	"time"
 
 	"github.com/prysmaticlabs/prysm/v5/config/params"
 	"github.com/prysmaticlabs/prysm/v5/consensus-types/primitives"
@@ -71,6 +72,7 @@ func UnShuffledIndex(index primitives.ValidatorIndex, indexCount uint64, seed [3
 //
 //	 return index
 func ComputeShuffledIndex(index primitives.ValidatorIndex, indexCount uint64, seed [32]byte, shuffle bool) (primitives.ValidatorIndex, error) {
+	fmt.Printf("[SPEC_CALL] ComputeShuffledIndex %d\n", time.Now().UnixNano())
 	if params.BeaconConfig().ShuffleRoundCount == 0 {
 		return index, nil
 	}

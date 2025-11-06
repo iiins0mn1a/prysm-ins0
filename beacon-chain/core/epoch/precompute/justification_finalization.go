@@ -1,10 +1,13 @@
 package precompute
 
 import (
+	"fmt"
+	"time"
+
 	"github.com/pkg/errors"
 	"github.com/prysmaticlabs/go-bitfield"
 	"github.com/prysmaticlabs/prysm/v5/beacon-chain/core/helpers"
-	"github.com/prysmaticlabs/prysm/v5/beacon-chain/core/time"
+	beacontime "github.com/prysmaticlabs/prysm/v5/beacon-chain/core/time"
 	"github.com/prysmaticlabs/prysm/v5/beacon-chain/state"
 	"github.com/prysmaticlabs/prysm/v5/config/params"
 	ethpb "github.com/prysmaticlabs/prysm/v5/proto/prysm/v1alpha1"
@@ -55,6 +58,7 @@ func UnrealizedCheckpoints(st state.BeaconState) (*ethpb.Checkpoint, *ethpb.Chec
 //	  current_target_balance = get_attesting_balance(state, current_attestations)
 //	  weigh_justification_and_finalization(state, total_active_balance, previous_target_balance, current_target_balance)
 func ProcessJustificationAndFinalizationPreCompute(state state.BeaconState, pBal *Balance) (state.BeaconState, error) {
+	fmt.Printf("[SPEC_CALL] ProcessJustificationAndFinalizationPreCompute %d\n", time.Now().UnixNano())
 	canProcessSlot, err := slots.EpochStart(2 /*epoch*/)
 	if err != nil {
 		return nil, err
@@ -151,8 +155,9 @@ func weighJustificationAndFinalization(state state.BeaconState, newBits bitfield
 //	if all(bits[0:2]) and old_current_justified_checkpoint.epoch + 1 == current_epoch:
 //	    state.finalized_checkpoint = old_current_justified_checkpoint
 func computeCheckpoints(state state.BeaconState, newBits bitfield.Bitvector4) (*ethpb.Checkpoint, *ethpb.Checkpoint, error) {
-	prevEpoch := time.PrevEpoch(state)
-	currentEpoch := time.CurrentEpoch(state)
+	fmt.Printf("[SPEC_CALL] computeCheckpoints %d\n", time.Now().UnixNano())
+	prevEpoch := beacontime.PrevEpoch(state)
+	currentEpoch := beacontime.CurrentEpoch(state)
 	oldPrevJustifiedCheckpoint := state.PreviousJustifiedCheckpoint()
 	oldCurrJustifiedCheckpoint := state.CurrentJustifiedCheckpoint()
 
