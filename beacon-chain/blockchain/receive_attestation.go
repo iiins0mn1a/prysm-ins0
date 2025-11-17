@@ -116,6 +116,7 @@ func (s *Service) spawnProcessAttestationsRoutine() {
 // UpdateHead updates the canonical head of the chain based on information from fork-choice attestations and votes.
 // The caller of this function MUST hold a lock in forkchoice
 func (s *Service) UpdateHead(ctx context.Context, proposingSlot primitives.Slot) {
+	fmt.Printf("[CORE_CALL] UpdateHead %d\n", time.Now().UnixNano())
 	ctx, span := trace.StartSpan(ctx, "beacon-chain.blockchain.UpdateHead")
 	defer span.End()
 
@@ -131,12 +132,13 @@ func (s *Service) UpdateHead(ctx context.Context, proposingSlot primitives.Slot)
 	processAttsElapsedTime.Observe(float64(time.Since(start).Milliseconds()))
 
 	start = time.Now()
-	// return early if we haven't changed head
+
 	newHeadRoot, err := s.cfg.ForkChoiceStore.Head(ctx)
 	if err != nil {
 		log.WithError(err).Error("Could not compute head from new attestations")
 		return
 	}
+	// return early if we haven't changed head
 	if !s.isNewHead(newHeadRoot) {
 		return
 	}
@@ -186,10 +188,12 @@ func (s *Service) processAttestations(ctx context.Context, disparity time.Durati
 			log.WithError(err).Error("Could not delete fork choice attestation in pool")
 		}
 
+		// 此处若校验出问题，可能导致错误弃票；
 		if !helpers.VerifyCheckpointEpoch(a.GetData().Target, s.genesisTime) {
 			continue
 		}
 
+		// LMD-GHOST 的最新投票更新
 		if err := s.receiveAttestationNoPubsub(ctx, a, disparity); err != nil {
 			var fields logrus.Fields
 			if a.Version() >= version.Electra {

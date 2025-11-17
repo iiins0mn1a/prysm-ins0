@@ -606,8 +606,10 @@ func daCheckLogFields(root [32]byte, slot primitives.Slot, expected, missing int
 func (s *Service) lateBlockTasks(ctx context.Context) {
 	currentSlot := s.CurrentSlot()
 	if s.CurrentSlot() == s.HeadSlot() {
+		// Head received, no need to process late block tasks
 		return
 	}
+	// Head Missed
 	s.cfg.ForkChoiceStore.RLock()
 	defer s.cfg.ForkChoiceStore.RUnlock()
 	// return early if we are in init sync

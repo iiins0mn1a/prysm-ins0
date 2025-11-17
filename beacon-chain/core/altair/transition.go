@@ -2,6 +2,8 @@ package altair
 
 import (
 	"context"
+	"fmt"
+	"time"
 
 	"github.com/pkg/errors"
 	e "github.com/prysmaticlabs/prysm/v5/beacon-chain/core/epoch"
@@ -29,6 +31,7 @@ import (
 //	process_participation_flag_updates(state)  # [New in Altair]
 //	process_sync_committee_updates(state)  # [New in Altair]
 func ProcessEpoch(ctx context.Context, state state.BeaconState) error {
+	fmt.Printf("[SPEC_CALL] [State] ProcessEpoch %d\n", time.Now().UnixNano())
 	ctx, span := trace.StartSpan(ctx, "altair.ProcessEpoch")
 	defer span.End()
 

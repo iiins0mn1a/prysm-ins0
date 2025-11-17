@@ -45,7 +45,7 @@ var (
 //	  """
 //	  return validator.activation_epoch <= epoch < validator.exit_epoch
 func IsActiveValidator(validator *ethpb.Validator, epoch primitives.Epoch) bool {
-	fmt.Printf("[SPEC_CALL] IsActiveValidator %d\n", time.Now().UnixNano())
+	// fmt.Printf("[SPEC_CALL] IsActiveValidator %d\n", time.Now().UnixNano())
 	return checkValidatorActiveStatus(validator.ActivationEpoch, validator.ExitEpoch, epoch)
 }
 
@@ -104,7 +104,7 @@ func checkValidatorSlashable(activationEpoch, withdrawableEpoch primitives.Epoch
 //	  """
 //	  return [ValidatorIndex(i) for i, v in enumerate(state.validators) if is_active_validator(v, epoch)]
 func ActiveValidatorIndices(ctx context.Context, s state.ReadOnlyBeaconState, epoch primitives.Epoch) ([]primitives.ValidatorIndex, error) {
-	fmt.Printf("[SPEC_CALL] ActiveValidatorIndices %d\n", time.Now().UnixNano())
+	// fmt.Printf("[SPEC_CALL] ActiveValidatorIndices %d\n", time.Now().UnixNano())
 	seed, err := Seed(s, epoch, params.BeaconConfig().DomainBeaconAttester)
 	if err != nil {
 		return nil, errors.Wrap(err, "could not get seed")
@@ -270,7 +270,7 @@ func ValidatorActivationChurnLimitDeneb(activeValidatorCount uint64) uint64 {
 //	  indices = get_active_validator_indices(state, epoch)
 //	  return compute_proposer_index(state, indices, seed)
 func BeaconProposerIndex(ctx context.Context, state state.ReadOnlyBeaconState) (primitives.ValidatorIndex, error) {
-	fmt.Printf("[SPEC_CALL] BeaconProposerIndex %d\n", time.Now().UnixNano())
+	// fmt.Printf("[SPEC_CALL] BeaconProposerIndex %d\n", time.Now().UnixNano())
 	return BeaconProposerIndexAtSlot(ctx, state, state.Slot())
 }
 
@@ -367,7 +367,7 @@ func BeaconProposerIndexAtSlot(ctx context.Context, state state.ReadOnlyBeaconSt
 //	          return candidate_index
 //	      i += 1
 func ComputeProposerIndex(bState state.ReadOnlyBeaconState, activeIndices []primitives.ValidatorIndex, seed [32]byte) (primitives.ValidatorIndex, error) {
-	fmt.Printf("[SPEC_CALL] ComputeProposerIndex %d\n", time.Now().UnixNano())
+	fmt.Printf("[SPEC_CALL] [Vote] ComputeProposerIndex %d\n", time.Now().UnixNano())
 	length := uint64(len(activeIndices))
 	if length == 0 {
 		return 0, errors.New("empty active indices list")

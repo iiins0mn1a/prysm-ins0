@@ -3,7 +3,6 @@ package blocks
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/pkg/errors"
 	"github.com/prysmaticlabs/prysm/v5/beacon-chain/core/helpers"
@@ -224,7 +223,7 @@ func ProcessAttestationNoVerifySignature(
 //	  signing_root = compute_signing_root(indexed_attestation.data, domain)
 //	  return bls.FastAggregateVerify(pubkeys, signing_root, indexed_attestation.signature)
 func VerifyIndexedAttestation(ctx context.Context, beaconState state.ReadOnlyBeaconState, indexedAtt ethpb.IndexedAtt) error {
-	fmt.Printf("[SPEC_CALL] VerifyIndexedAttestation %d\n", time.Now().UnixNano())
+	// fmt.Printf("[SPEC_CALL] VerifyIndexedAttestation %d\n", time.Now().UnixNano())
 	ctx, span := trace.StartSpan(ctx, "core.VerifyIndexedAttestation")
 	defer span.End()
 

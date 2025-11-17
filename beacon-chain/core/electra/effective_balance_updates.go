@@ -2,6 +2,7 @@ package electra
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/prysmaticlabs/prysm/v5/beacon-chain/core/helpers"
 	"github.com/prysmaticlabs/prysm/v5/beacon-chain/state"
@@ -31,6 +32,7 @@ import (
 //	        ):
 //	            validator.effective_balance = min(balance - balance % EFFECTIVE_BALANCE_INCREMENT, EFFECTIVE_BALANCE_LIMIT)
 func ProcessEffectiveBalanceUpdates(st state.BeaconState) error {
+	fmt.Printf("[SPEC_CALL] [Vote] ProcessEffectiveBalanceUpdates %d\n", time.Now().UnixNano())
 	effBalanceInc := params.BeaconConfig().EffectiveBalanceIncrement
 	hysteresisInc := effBalanceInc / params.BeaconConfig().HysteresisQuotient
 	downwardThreshold := hysteresisInc * params.BeaconConfig().HysteresisDownwardMultiplier

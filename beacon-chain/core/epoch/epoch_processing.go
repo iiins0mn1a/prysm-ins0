@@ -155,6 +155,7 @@ func ProcessRegistryUpdates(ctx context.Context, st state.BeaconState) (state.Be
 //	          penalty = penalty_numerator // total_balance * increment
 //	          decrease_balance(state, ValidatorIndex(index), penalty)
 func ProcessSlashings(st state.BeaconState, slashingMultiplier uint64) (state.BeaconState, error) {
+	fmt.Printf("[SPEC_CALL] [Slash] ProcessSlashings %d\n", time.Now().UnixNano())
 	currentEpoch := beacontime.CurrentEpoch(st)
 	totalBalance, err := helpers.TotalActiveBalance(st)
 	if err != nil {
@@ -211,6 +212,7 @@ func ProcessSlashings(st state.BeaconState, slashingMultiplier uint64) (state.Be
 //	  if next_epoch % EPOCHS_PER_ETH1_VOTING_PERIOD == 0:
 //	      state.eth1_data_votes = []
 func ProcessEth1DataReset(state state.BeaconState) (state.BeaconState, error) {
+	fmt.Printf("[SPEC_CALL] [Eth1] ProcessEth1DataReset %d\n", time.Now().UnixNano())
 	currentEpoch := beacontime.CurrentEpoch(state)
 	nextEpoch := currentEpoch + 1
 
@@ -288,6 +290,7 @@ func ProcessEffectiveBalanceUpdates(st state.BeaconState) (state.BeaconState, er
 //	  # Reset slashings
 //	  state.slashings[next_epoch % EPOCHS_PER_SLASHINGS_VECTOR] = Gwei(0)
 func ProcessSlashingsReset(state state.BeaconState) (state.BeaconState, error) {
+	fmt.Printf("[SPEC_CALL] [Slash] ProcessSlashingsReset %d\n", time.Now().UnixNano())
 	currentEpoch := beacontime.CurrentEpoch(state)
 	nextEpoch := currentEpoch + 1
 
@@ -319,7 +322,7 @@ func ProcessSlashingsReset(state state.BeaconState) (state.BeaconState, error) {
 //	  # Set randao mix
 //	  state.randao_mixes[next_epoch % EPOCHS_PER_HISTORICAL_VECTOR] = get_randao_mix(state, current_epoch)
 func ProcessRandaoMixesReset(state state.BeaconState) (state.BeaconState, error) {
-	fmt.Printf("[SPEC_CALL] ProcessRandaoMixesReset %d\n", time.Now().UnixNano())
+	fmt.Printf("[SPEC_CALL] [Randao] ProcessRandaoMixesReset %d\n", time.Now().UnixNano())
 	currentEpoch := beacontime.CurrentEpoch(state)
 	nextEpoch := currentEpoch + 1
 
@@ -392,6 +395,7 @@ func ProcessHistoricalDataUpdate(state state.BeaconState) (state.BeaconState, er
 //	  state.previous_epoch_attestations = state.current_epoch_attestations
 //	  state.current_epoch_attestations = []
 func ProcessParticipationRecordUpdates(state state.BeaconState) (state.BeaconState, error) {
+	fmt.Printf("[SPEC_CALL] [Vote] ProcessParticipationRecordUpdates %d\n", time.Now().UnixNano())
 	if err := state.RotateAttestations(); err != nil {
 		return nil, err
 	}

@@ -31,19 +31,23 @@ func (s *Service) prepareForkChoiceAtts() {
 			break
 		}
 	}
+	// By default, in the 7, 9.5, 11.8 seconds of the slot, ticker will emit a tick.
 	ticker := slots.NewSlotTickerWithIntervals(time.Unix(int64(s.genesisTime), 0), intervals[:])
 	for {
 		select {
+		// When the ticker emits a tick, we will batch the fork choice attestations.
 		case slotInterval := <-ticker.C():
 			t := time.Now()
 			if err := s.batchForkChoiceAtts(s.ctx); err != nil {
 				log.WithError(err).Error("Could not prepare attestations for fork choice")
 			}
 			switch slotInterval.Interval {
+			// First interval, 7 seconds of the slot.
 			case 0:
 				duration := time.Since(t)
 				log.WithField("duration", duration).Debug("Aggregated unaggregated attestations")
 				batchForkChoiceAttsT1.Observe(float64(duration.Milliseconds()))
+			// Second interval, 9.5 seconds of the slot.
 			case 1:
 				batchForkChoiceAttsT2.Observe(float64(time.Since(t).Milliseconds()))
 			}

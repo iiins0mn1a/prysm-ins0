@@ -34,7 +34,7 @@ func ProcessRandao(
 	beaconState state.BeaconState,
 	b interfaces.ReadOnlySignedBeaconBlock,
 ) (state.BeaconState, error) {
-	fmt.Printf("[SPEC_CALL] ProcessRandao %d\n", time.Now().UnixNano())
+	fmt.Printf("[SPEC_CALL] [Randao] ProcessRandao %d\n", time.Now().UnixNano())
 	if err := blocks.BeaconBlockIsNil(b); err != nil {
 		return nil, err
 	}

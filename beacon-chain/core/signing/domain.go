@@ -1,9 +1,6 @@
 package signing
 
 import (
-	"fmt"
-	"time"
-
 	"github.com/pkg/errors"
 	"github.com/prysmaticlabs/prysm/v5/consensus-types/primitives"
 	"github.com/prysmaticlabs/prysm/v5/crypto/bls"
@@ -22,7 +19,7 @@ import (
 //	  fork_version = state.fork.previous_version if epoch < state.fork.epoch else state.fork.current_version
 //	  return compute_domain(domain_type, fork_version, state.genesis_validators_root)
 func Domain(fork *eth.Fork, epoch primitives.Epoch, domainType [bls.DomainByteLength]byte, genesisRoot []byte) ([]byte, error) {
-	fmt.Printf("[SPEC_CALL] Domain %d\n", time.Now().UnixNano())
+	// fmt.Printf("[SPEC_CALL] Domain %d\n", time.Now().UnixNano())
 	if fork == nil {
 		return []byte{}, errors.New("nil fork or domain type")
 	}

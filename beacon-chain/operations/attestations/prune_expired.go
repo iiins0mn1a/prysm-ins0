@@ -25,7 +25,7 @@ func (s *Service) pruneAttsPool() {
 	}
 }
 
-// This prunes expired attestations from the pool.
+// This prunes expired attestations from the pool on every slot interval.
 func (s *Service) pruneExpiredAtts() {
 	aggregatedAtts := s.cfg.Pool.AggregatedAttestations()
 	for _, att := range aggregatedAtts {

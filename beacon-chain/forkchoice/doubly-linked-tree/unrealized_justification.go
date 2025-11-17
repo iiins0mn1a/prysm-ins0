@@ -43,7 +43,7 @@ func (s *Store) setUnrealizedFinalizedEpoch(root [32]byte, epoch primitives.Epoc
 // updateUnrealizedCheckpoints "realizes" the unrealized justified and finalized
 // epochs stored within nodes. It should be called at the beginning of each epoch.
 func (f *ForkChoice) updateUnrealizedCheckpoints(ctx context.Context) error {
-	fmt.Printf("[SPEC_CALL] updateUnrealizedCheckpoints %d\n", time.Now().UnixNano())
+	fmt.Printf("[CORE_CALL] updateUnrealizedCheckpoints %d\n", time.Now().UnixNano())
 	for _, node := range f.store.nodeByRoot {
 		node.justifiedEpoch = node.unrealizedJustifiedEpoch
 		node.finalizedEpoch = node.unrealizedFinalizedEpoch

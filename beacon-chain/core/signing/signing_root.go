@@ -1,9 +1,7 @@
 package signing
 
 import (
-	"fmt"
 	"sync"
-	"time"
 
 	"github.com/pkg/errors"
 	fssz "github.com/prysmaticlabs/fastssz"
@@ -97,7 +95,7 @@ func ComputeDomainAndSignWithoutState(fork *ethpb.Fork, epoch primitives.Epoch, 
 //	       domain=domain,
 //	   ))
 func ComputeSigningRoot(object fssz.HashRoot, domain []byte) ([32]byte, error) {
-	fmt.Printf("[SPEC_CALL] ComputeSigningRoot %d\n", time.Now().UnixNano())
+	// fmt.Printf("[SPEC_CALL] ComputeSigningRoot %d\n", time.Now().UnixNano())
 	return Data(object.HashTreeRoot, domain)
 }
 

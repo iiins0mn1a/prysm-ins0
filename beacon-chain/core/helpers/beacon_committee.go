@@ -143,7 +143,7 @@ func BeaconCommittees(ctx context.Context, state state.ReadOnlyBeaconState, slot
 //	     count=committees_per_slot * SLOTS_PER_EPOCH,
 //	 )
 func BeaconCommitteeFromState(ctx context.Context, state state.ReadOnlyBeaconState, slot primitives.Slot, committeeIndex primitives.CommitteeIndex) ([]primitives.ValidatorIndex, error) {
-	fmt.Printf("[SPEC_CALL] BeaconCommitteeFromState %d\n", time.Now().UnixNano())
+	fmt.Printf("[SPEC_CALL] [Vote] BeaconCommitteeFromState %d\n", time.Now().UnixNano())
 	epoch := slots.ToEpoch(slot)
 	seed, err := Seed(state, epoch, params.BeaconConfig().DomainBeaconAttester)
 	if err != nil {
@@ -191,7 +191,7 @@ func BeaconCommittee(
 	slot primitives.Slot,
 	committeeIndex primitives.CommitteeIndex,
 ) ([]primitives.ValidatorIndex, error) {
-	fmt.Printf("[SPEC_CALL] BeaconCommittee %d\n", time.Now().UnixNano())
+	fmt.Printf("[SPEC_CALL] [Vote] BeaconCommittee %d\n", time.Now().UnixNano())
 	committee, err := committeeCache.Committee(ctx, slot, seed, committeeIndex)
 	if err != nil {
 		return nil, errors.Wrap(err, "could not interface with committee cache")
@@ -511,7 +511,7 @@ func ComputeCommittee(
 	seed [32]byte,
 	index, count uint64,
 ) ([]primitives.ValidatorIndex, error) {
-	fmt.Printf("[SPEC_CALL] ComputeCommittee %d\n", time.Now().UnixNano())
+	fmt.Printf("[SPEC_CALL] [Vote] ComputeCommittee %d\n", time.Now().UnixNano())
 	validatorCount := uint64(len(indices))
 	start := slice.SplitOffset(validatorCount, count, index)
 	end := slice.SplitOffset(validatorCount, count, index+1)

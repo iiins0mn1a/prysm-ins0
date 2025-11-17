@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	_time "time"
 
 	"github.com/prysmaticlabs/prysm/v5/beacon-chain/core/helpers"
 	"github.com/prysmaticlabs/prysm/v5/beacon-chain/core/time"
@@ -36,6 +37,7 @@ import (
 //	             if is_eligible_for_activation(state, validator):
 //	                 validator.activation_epoch = activation_epoch
 func ProcessRegistryUpdates(ctx context.Context, st state.BeaconState) error {
+	fmt.Printf("[SPEC_CALL] [Registry] ProcessRegistryUpdates %d\n", _time.Now().UnixNano())
 	currentEpoch := time.CurrentEpoch(st)
 	ejectionBal := params.BeaconConfig().EjectionBalance
 	activationEpoch := helpers.ActivationExitEpoch(currentEpoch)

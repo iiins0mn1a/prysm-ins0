@@ -32,7 +32,7 @@ import (
 //	    if ancestor_at_finalized_slot == store.finalized_checkpoint.root:
 //	        store.justified_checkpoint = store.best_justified_checkpoint
 func (f *ForkChoice) NewSlot(ctx context.Context, slot primitives.Slot) error {
-	fmt.Printf("[SPEC_CALL] NewSlot %d\n", time.Now().UnixNano())
+	fmt.Printf("[SPEC_CALL] [State] NewSlot %d\n", time.Now().UnixNano())
 	// Reset proposer boost root
 	f.store.proposerBoostRoot = [32]byte{}
 

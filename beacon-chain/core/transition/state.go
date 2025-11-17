@@ -2,6 +2,8 @@ package transition
 
 import (
 	"context"
+	"fmt"
+	"time"
 
 	"github.com/pkg/errors"
 	"github.com/prysmaticlabs/prysm/v5/beacon-chain/core/altair"
@@ -58,6 +60,7 @@ import (
 //
 // This method differs from the spec so as to process deposits beforehand instead of the end of the function.
 func GenesisBeaconState(ctx context.Context, deposits []*ethpb.Deposit, genesisTime uint64, eth1Data *ethpb.Eth1Data) (state.BeaconState, error) {
+	fmt.Printf("[SPEC_CALL] [Genesis] GenesisBeaconState %d\n", time.Now().UnixNano())
 	st, err := EmptyGenesisState()
 	if err != nil {
 		return nil, err

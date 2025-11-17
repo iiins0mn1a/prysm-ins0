@@ -2,7 +2,9 @@ package blocks
 
 import (
 	"context"
+	"fmt"
 	"sort"
+	_time "time"
 
 	"github.com/pkg/errors"
 	"github.com/prysmaticlabs/prysm/v5/beacon-chain/core/helpers"
@@ -41,6 +43,7 @@ func ProcessAttesterSlashings(
 	slashings []ethpb.AttSlashing,
 	slashFunc slashValidatorFunc,
 ) (state.BeaconState, error) {
+	fmt.Printf("[SPEC_CALL] [Slash] ProcessAttesterSlashings %d\n", _time.Now().UnixNano())
 	var err error
 	for _, slashing := range slashings {
 		beaconState, err = ProcessAttesterSlashing(ctx, beaconState, slashing, slashFunc)

@@ -23,7 +23,7 @@ import (
 //	  mix = get_randao_mix(state, Epoch(epoch + EPOCHS_PER_HISTORICAL_VECTOR - MIN_SEED_LOOKAHEAD - 1))  # Avoid underflow
 //	  return hash(domain_type + uint_to_bytes(epoch) + mix)
 func Seed(state state.ReadOnlyBeaconState, epoch primitives.Epoch, domain [bls.DomainByteLength]byte) ([32]byte, error) {
-	fmt.Printf("[SPEC_CALL] Seed %d\n", time.Now().UnixNano())
+	fmt.Printf("[SPEC_CALL] [Randao] Seed %d\n", time.Now().UnixNano())
 	// See https://github.com/ethereum/consensus-specs/pull/1296 for
 	// rationale on why offset has to look down by 1.
 	lookAheadEpoch := epoch + params.BeaconConfig().EpochsPerHistoricalVector -
@@ -52,6 +52,6 @@ func Seed(state state.ReadOnlyBeaconState, epoch primitives.Epoch, domain [bls.D
 //	 """
 //	 return state.randao_mixes[epoch % EPOCHS_PER_HISTORICAL_VECTOR]
 func RandaoMix(state state.ReadOnlyBeaconState, epoch primitives.Epoch) ([]byte, error) {
-	fmt.Printf("[SPEC_CALL] RandaoMix %d\n", time.Now().UnixNano())
+	fmt.Printf("[SPEC_CALL] [Randao] RandaoMix %d\n", time.Now().UnixNano())
 	return state.RandaoMixAtIndex(uint64(epoch % params.BeaconConfig().EpochsPerHistoricalVector))
 }
