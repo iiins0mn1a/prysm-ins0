@@ -62,6 +62,7 @@ type SlashingReceiver interface {
 //  2. Apply fork choice to the processed block
 //  3. Save latest head info
 func (s *Service) ReceiveBlock(ctx context.Context, block interfaces.ReadOnlySignedBeaconBlock, blockRoot [32]byte, avs das.AvailabilityStore) error {
+	fmt.Printf("[SPEC_CALL] [Block] ReceiveBlock %d\n", time.Now().UnixNano())
 	ctx, span := trace.StartSpan(ctx, "blockChain.ReceiveBlock")
 	defer span.End()
 	// Return early if the block has been synced
