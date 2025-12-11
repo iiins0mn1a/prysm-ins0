@@ -12,7 +12,7 @@ import (
 	lru "github.com/hashicorp/golang-lru"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	libp2pcore "github.com/libp2p/go-libp2p/core"
-	"github.com/libp2p/go-libp2p/core/peer"
+	libp2ppeer "github.com/libp2p/go-libp2p/core/peer"
 	gcache "github.com/patrickmn/go-cache"
 	"github.com/pkg/errors"
 	"github.com/prysmaticlabs/prysm/v5/async"
@@ -226,8 +226,9 @@ func (s *Service) Start() {
 	go s.verifierRoutine()
 	go s.registerHandlers()
 
-	s.cfg.p2p.AddConnectionHandler(s.reValidatePeer, s.sendGoodbye)
-	s.cfg.p2p.AddDisconnectionHandler(func(_ context.Context, _ peer.ID) error {
+	// Register connection and disconnection handlers.
+	s.cfg.p2p.AddConnectionHandler(s.reValidatePeer, s.sendGoodbye, s.startPeerFuzzLoop)
+	s.cfg.p2p.AddDisconnectionHandler(func(_ context.Context, _ libp2ppeer.ID) error {
 		// no-op
 		return nil
 	})

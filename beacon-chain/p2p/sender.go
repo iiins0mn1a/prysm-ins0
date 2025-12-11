@@ -24,8 +24,19 @@ func (s *Service) Send(ctx context.Context, message interface{}, baseTopic strin
 	if err := VerifyTopicMapping(baseTopic, message); err != nil {
 		return nil, err
 	}
+
 	topic := baseTopic + s.Encoding().ProtocolSuffix()
 	span.SetAttributes(trace.StringAttribute("topic", topic))
+
+	// Record the outgoing message for fuzzing purposes before any
+	// network interaction. This allows fuzz routines to build a
+	// seed corpus of realistic messages per peer, keyed by logical
+	// category (aligned with LOKI-POS).
+	if s.fuzzRecorder != nil {
+		if category := classifyRPC(baseTopic, message); category != "" {
+			s.fuzzRecorder.RecordOutgoing(pid, category, topic, message)
+		}
+	}
 
 	log.WithFields(logrus.Fields{
 		"topic":   topic,

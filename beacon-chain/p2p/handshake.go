@@ -27,8 +27,15 @@ func peerMultiaddrString(conn network.Conn) string {
 
 // AddConnectionHandler adds a callback function which handles the connection with a
 // newly added peer. It performs a handshake with that peer by sending a hello request
-// and validating the response from the peer.
-func (s *Service) AddConnectionHandler(reqFunc, goodByeFunc func(ctx context.Context, id peer.ID) error) {
+// and validating the response from the peer. The onConnected callback is invoked
+// after a peer has been validated and marked as connected. The onConnected callback
+// MUST NOT block, as it is invoked from a goroutine tied to the libp2p connection
+// notifications.
+func (s *Service) AddConnectionHandler(
+	reqFunc func(ctx context.Context, id peer.ID) error,
+	goodByeFunc func(ctx context.Context, id peer.ID) error,
+	onConnected func(ctx context.Context, id peer.ID),
+) {
 	// Peer map and lock to keep track of current connection attempts.
 	peerMap := make(map[peer.ID]bool)
 	peerLock := new(sync.Mutex)
@@ -98,6 +105,11 @@ func (s *Service) AddConnectionHandler(reqFunc, goodByeFunc func(ctx context.Con
 						"multiAddr":   peerMultiaddrString(conn),
 						"activePeers": len(s.peers.Active()),
 					}).Debug("Peer connected")
+					if onConnected != nil {
+						// Run onConnected in a separate goroutine to avoid blocking
+						// the connection notification path.
+						go onConnected(context.TODO(), conn.RemotePeer())
+					}
 				}
 
 				// Do not perform handshake on inbound dials.

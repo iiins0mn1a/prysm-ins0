@@ -146,9 +146,11 @@ func (s *Service) internalBroadcastAttestation(ctx context.Context, subnet uint6
 		return
 	}
 
-	if err := s.broadcastObject(ctx, att, attestationToTopic(subnet, forkDigest)); err != nil {
+	topic := attestationToTopic(subnet, forkDigest)
+	if err := s.broadcastObject(ctx, att, topic); err != nil {
 		log.WithError(err).Error("Failed to broadcast attestation")
 		tracing.AnnotateError(span, err)
+		return
 	}
 }
 
@@ -262,9 +264,11 @@ func (s *Service) internalBroadcastBlob(ctx context.Context, subnet uint64, blob
 		}
 	}
 
-	if err := s.broadcastObject(ctx, blobSidecar, blobSubnetToTopic(subnet, forkDigest)); err != nil {
+	topic := blobSubnetToTopic(subnet, forkDigest)
+	if err := s.broadcastObject(ctx, blobSidecar, topic); err != nil {
 		log.WithError(err).Error("Failed to broadcast blob sidecar")
 		tracing.AnnotateError(span, err)
+		return
 	}
 }
 
@@ -289,11 +293,27 @@ func (s *Service) broadcastObject(ctx context.Context, obj ssz.Marshaler, topic 
 		iid := int64(id)
 		span = trace.AddMessageSendEvent(span, iid, messageLen /*uncompressed*/, messageLen /*compressed*/)
 	}
-	if err := s.PublishToTopic(ctx, topic+s.Encoding().ProtocolSuffix(), buf.Bytes()); err != nil {
+	psTopic := topic + s.Encoding().ProtocolSuffix()
+	if err := s.PublishToTopic(ctx, psTopic, buf.Bytes()); err != nil {
 		err := errors.Wrap(err, "could not publish message")
 		tracing.AnnotateError(span, err)
 		return err
 	}
+
+	// After a successful publish, approximate which peers might receive
+	// this gossip by inspecting the peers currently subscribed to the
+	// pubsub topic and recording the message for them.
+	if s.fuzzRecorder != nil {
+		if th, err := s.JoinTopic(psTopic); err == nil {
+			pids := th.ListPeers()
+			if len(pids) > 0 {
+				if category := classifyGossipCategory(obj); category != "" {
+					s.recordGossipForPeers(category, obj, pids, psTopic)
+				}
+			}
+		}
+	}
+
 	return nil
 }
 

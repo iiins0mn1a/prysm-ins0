@@ -78,6 +78,19 @@ type Service struct {
 	genesisTime           time.Time
 	genesisValidatorsRoot []byte
 	activeValidatorCount  uint64
+	// fuzzRecorder keeps track of messages that have been sent from this
+	// node to individual peers. It is used to support targeted fuzzing
+	// based on recent traffic.
+	fuzzRecorder *PeerMessageRecorder
+}
+
+// RecentRecordedMessages returns the recent messages recorded for the
+// given peer. It is intended for use by higher-level fuzzing logic.
+func (s *Service) RecentRecordedMessages(id peer.ID) []RecordedMessage {
+	if s.fuzzRecorder == nil {
+		return nil
+	}
+	return s.fuzzRecorder.RecentMessages(id)
 }
 
 // NewService initializes a new p2p service compatible with shared.Service interface. No
@@ -117,6 +130,7 @@ func NewService(ctx context.Context, cfg *Config) (*Service, error) {
 		isPreGenesis: true,
 		joinedTopics: make(map[string]*pubsub.Topic, len(gossipTopicMappings)),
 		subnetsLock:  make(map[uint64]*sync.RWMutex),
+		fuzzRecorder: NewPeerMessageRecorder(),
 	}
 
 	ipAddr := prysmnetwork.IPAddr()
