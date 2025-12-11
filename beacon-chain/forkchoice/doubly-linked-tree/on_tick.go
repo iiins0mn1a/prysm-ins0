@@ -2,10 +2,9 @@ package doublylinkedtree
 
 import (
 	"context"
-	"fmt"
-	"time"
 
 	"github.com/pkg/errors"
+	"github.com/prysmaticlabs/prysm/v5/beacon-chain/core/helpers"
 	"github.com/prysmaticlabs/prysm/v5/consensus-types/primitives"
 	"github.com/prysmaticlabs/prysm/v5/time/slots"
 )
@@ -32,7 +31,7 @@ import (
 //	    if ancestor_at_finalized_slot == store.finalized_checkpoint.root:
 //	        store.justified_checkpoint = store.best_justified_checkpoint
 func (f *ForkChoice) NewSlot(ctx context.Context, slot primitives.Slot) error {
-	fmt.Printf("[SPEC_CALL] [State] NewSlot %d\n", time.Now().UnixNano())
+	helpers.LogSpecCall("forkchoice", "NewSlot")
 	// Reset proposer boost root
 	f.store.proposerBoostRoot = [32]byte{}
 

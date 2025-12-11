@@ -8,6 +8,7 @@ go_library(
         "block.go",
         "genesis.go",
         "metrics.go",
+        "spec_log.go",
         "randao.go",
         "rewards_penalties.go",
         "shuffle.go",

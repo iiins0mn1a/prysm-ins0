@@ -2,8 +2,6 @@ package altair
 
 import (
 	"context"
-	"fmt"
-	"time"
 
 	"github.com/pkg/errors"
 	"github.com/prysmaticlabs/prysm/v5/beacon-chain/core/blocks"
@@ -84,7 +82,7 @@ func ProcessDeposits(
 //	  signature=deposit.data.signature,
 //	 )
 func ProcessDeposit(beaconState state.BeaconState, deposit *ethpb.Deposit, verifySignature bool) (state.BeaconState, error) {
-	fmt.Printf("[SPEC_CALL] [Registry] ProcessDeposit %d\n", time.Now().UnixNano())
+	helpers.LogSpecCall("altair", "ProcessDeposit")
 	if err := blocks.VerifyDeposit(beaconState, deposit); err != nil {
 		if deposit == nil || deposit.Data == nil {
 			return nil, err
@@ -119,7 +117,7 @@ func ProcessDeposit(beaconState state.BeaconState, deposit *ethpb.Deposit, verif
 //	    index = ValidatorIndex(validator_pubkeys.index(pubkey))
 //	    increase_balance(state, index, amount)
 func ApplyDeposit(beaconState state.BeaconState, data *ethpb.Deposit_Data, verifySignature bool) (state.BeaconState, error) {
-	fmt.Printf("[SPEC_CALL] [Registry] ApplyDeposit %d\n", time.Now().UnixNano())
+	helpers.LogSpecCall("altair", "ApplyDeposit")
 	pubKey := data.PublicKey
 	amount := data.Amount
 	withdrawalCredentials := data.WithdrawalCredentials
@@ -159,7 +157,7 @@ func ApplyDeposit(beaconState state.BeaconState, data *ethpb.Deposit_Data, verif
 //	set_or_append_list(state.current_epoch_participation, index, ParticipationFlags(0b0000_0000)) // New in Altair
 //	set_or_append_list(state.inactivity_scores, index, uint64(0)) // New in Altair
 func AddValidatorToRegistry(beaconState state.BeaconState, pubKey []byte, withdrawalCredentials []byte, amount uint64) error {
-	fmt.Printf("[SPEC_CALL] [Registry] AddValidatorToRegistry %d\n", time.Now().UnixNano())
+	helpers.LogSpecCall("altair", "AddValidatorToRegistry")
 	val := GetValidatorFromDeposit(pubKey, withdrawalCredentials, amount)
 	if err := beaconState.AppendValidator(val); err != nil {
 		return err

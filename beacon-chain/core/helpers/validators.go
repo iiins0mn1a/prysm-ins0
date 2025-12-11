@@ -3,8 +3,6 @@ package helpers
 import (
 	"bytes"
 	"context"
-	"fmt"
-	"time"
 
 	"github.com/pkg/errors"
 	"github.com/prometheus/client_golang/prometheus"
@@ -367,7 +365,7 @@ func BeaconProposerIndexAtSlot(ctx context.Context, state state.ReadOnlyBeaconSt
 //	          return candidate_index
 //	      i += 1
 func ComputeProposerIndex(bState state.ReadOnlyBeaconState, activeIndices []primitives.ValidatorIndex, seed [32]byte) (primitives.ValidatorIndex, error) {
-	fmt.Printf("[SPEC_CALL] [Vote] ComputeProposerIndex %d\n", time.Now().UnixNano())
+	LogSpecCall("validators", "ComputeProposerIndex")
 	length := uint64(len(activeIndices))
 	if length == 0 {
 		return 0, errors.New("empty active indices list")

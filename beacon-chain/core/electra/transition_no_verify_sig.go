@@ -52,7 +52,7 @@ func ProcessOperations(
 	ctx context.Context,
 	st state.BeaconState,
 	block interfaces.ReadOnlyBeaconBlock) (state.BeaconState, error) {
-	fmt.Printf("[SPEC_CALL] ProcessOperations %d\n", time.Now().UnixNano())
+	helpers.LogSpecCall("electra", "ProcessOperationsNoVerifySig")
 	// 6110 validations are in VerifyOperationLengths
 	bb := block.Body()
 	// Electra extends the altair operations.

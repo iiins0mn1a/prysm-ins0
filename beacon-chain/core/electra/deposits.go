@@ -3,7 +3,6 @@ package electra
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/pkg/errors"
 	"github.com/prysmaticlabs/prysm/v5/beacon-chain/core/blocks"
@@ -84,7 +83,7 @@ func ProcessDeposits(
 //	  signature=deposit.data.signature,
 //	 )
 func ProcessDeposit(beaconState state.BeaconState, deposit *ethpb.Deposit, verifySignature bool) (state.BeaconState, error) {
-	fmt.Printf("[SPEC_CALL] [Registry] ProcessDeposit %d\n", time.Now().UnixNano())
+	helpers.LogSpecCall("electra", "ProcessDeposit")
 	if err := blocks.VerifyDeposit(beaconState, deposit); err != nil {
 		if deposit == nil || deposit.Data == nil {
 			return nil, err
@@ -119,7 +118,7 @@ func ProcessDeposit(beaconState state.BeaconState, deposit *ethpb.Deposit, verif
 //	):
 //	 switch_to_compounding_validator(state, index)
 func ApplyDeposit(beaconState state.BeaconState, data *ethpb.Deposit_Data, verifySignature bool) (state.BeaconState, error) {
-	fmt.Printf("[SPEC_CALL] [Registry] ApplyDeposit %d\n", time.Now().UnixNano())
+	helpers.LogSpecCall("electra", "ApplyDeposit")
 	pubKey := data.PublicKey
 	amount := data.Amount
 	withdrawalCredentials := data.WithdrawalCredentials
@@ -356,7 +355,7 @@ func ProcessDepositRequests(ctx context.Context, beaconState state.BeaconState, 
 //	    signature=deposit_request.signature,
 //	)
 func processDepositRequest(beaconState state.BeaconState, request *enginev1.DepositRequest, verifySignature bool) (state.BeaconState, error) {
-	fmt.Printf("[SPEC_CALL] [Registry] processDepositRequest %d\n", time.Now().UnixNano())
+	helpers.LogSpecCall("electra", "ProcessDepositRequest")
 	requestsStartIndex, err := beaconState.DepositRequestsStartIndex()
 	if err != nil {
 		return nil, errors.Wrap(err, "could not get deposit requests start index")

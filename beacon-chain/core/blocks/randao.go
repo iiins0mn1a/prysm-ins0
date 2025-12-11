@@ -2,10 +2,9 @@ package blocks
 
 import (
 	"context"
-	"fmt"
-	"time"
 
 	"github.com/pkg/errors"
+	"github.com/prysmaticlabs/prysm/v5/beacon-chain/core/helpers"
 	"github.com/prysmaticlabs/prysm/v5/beacon-chain/state"
 	"github.com/prysmaticlabs/prysm/v5/config/params"
 	"github.com/prysmaticlabs/prysm/v5/consensus-types/blocks"
@@ -34,7 +33,7 @@ func ProcessRandao(
 	beaconState state.BeaconState,
 	b interfaces.ReadOnlySignedBeaconBlock,
 ) (state.BeaconState, error) {
-	fmt.Printf("[SPEC_CALL] [Randao] ProcessRandao %d\n", time.Now().UnixNano())
+	helpers.LogSpecCall("blocks", "ProcessRandao")
 	if err := blocks.BeaconBlockIsNil(b); err != nil {
 		return nil, err
 	}

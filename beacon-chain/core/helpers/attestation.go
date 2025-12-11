@@ -61,7 +61,7 @@ func ValidateSlotTargetEpoch(data *ethpb.AttestationData) error {
 //	 modulo = max(1, len(committee) // TARGET_AGGREGATORS_PER_COMMITTEE)
 //	 return bytes_to_uint64(hash(slot_signature)[0:8]) % modulo == 0
 func IsAggregator(committeeCount uint64, slotSig []byte) (bool, error) {
-	// fmt.Printf("[SPEC_CALL] IsAggregator %d\n", time.Now().UnixNano())
+	LogSpecCall("attestation", "IsAggregator")
 	modulo := uint64(1)
 	if committeeCount/params.BeaconConfig().TargetAggregatorsPerCommittee > 1 {
 		modulo = committeeCount / params.BeaconConfig().TargetAggregatorsPerCommittee
@@ -93,7 +93,7 @@ func IsAggregated(attestation ethpb.Att) bool {
 //
 //	return uint64((committees_since_epoch_start + committee_index) % ATTESTATION_SUBNET_COUNT)
 func ComputeSubnetForAttestation(activeValCount uint64, att ethpb.Att) uint64 {
-	fmt.Printf("[SPEC_CALL] [Vote] ComputeSubnetForAttestation %d\n", time.Now().UnixNano())
+	LogSpecCall("attestation", "ComputeSubnetForAttestation")
 	if att.Version() >= version.Electra {
 		committeeIndex := 0
 		committeeIndices := att.CommitteeBitsVal().BitIndices()
@@ -120,7 +120,7 @@ func ComputeSubnetForAttestation(activeValCount uint64, att ethpb.Att) uint64 {
 //
 //	return uint64((committees_since_epoch_start + committee_index) % ATTESTATION_SUBNET_COUNT)
 func ComputeSubnetFromCommitteeAndSlot(activeValCount uint64, comIdx primitives.CommitteeIndex, attSlot primitives.Slot) uint64 {
-	fmt.Printf("[SPEC_CALL] [Vote] ComputeSubnetFromCommitteeAndSlot %d\n", time.Now().UnixNano())
+	LogSpecCall("attestation", "ComputeSubnetFromCommitteeAndSlot")
 	slotSinceStart := slots.SinceEpochStarts(attSlot)
 	comCount := SlotCommitteeCount(activeValCount)
 	commsSinceStart := uint64(slotSinceStart.Mul(comCount))

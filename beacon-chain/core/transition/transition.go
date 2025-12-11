@@ -7,7 +7,6 @@ import (
 	"bytes"
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/pkg/errors"
 	"github.com/prysmaticlabs/prysm/v5/beacon-chain/cache"
@@ -18,6 +17,7 @@ import (
 	e "github.com/prysmaticlabs/prysm/v5/beacon-chain/core/epoch"
 	"github.com/prysmaticlabs/prysm/v5/beacon-chain/core/epoch/precompute"
 	"github.com/prysmaticlabs/prysm/v5/beacon-chain/core/execution"
+	"github.com/prysmaticlabs/prysm/v5/beacon-chain/core/helpers"
 	beacontime "github.com/prysmaticlabs/prysm/v5/beacon-chain/core/time"
 	"github.com/prysmaticlabs/prysm/v5/beacon-chain/state"
 	"github.com/prysmaticlabs/prysm/v5/config/features"
@@ -57,7 +57,7 @@ func ExecuteStateTransition(
 	state state.BeaconState,
 	signed interfaces.ReadOnlySignedBeaconBlock,
 ) (state.BeaconState, error) {
-	fmt.Printf("[SPEC_CALL] [State] ExecuteStateTransition %d\n", time.Now().UnixNano())
+	helpers.LogSpecCall("transition", "ExecuteStateTransition")
 	if ctx.Err() != nil {
 		return nil, ctx.Err()
 	}
@@ -105,7 +105,7 @@ func ExecuteStateTransition(
 //	  previous_block_root = hash_tree_root(state.latest_block_header)
 //	  state.block_roots[state.slot % SLOTS_PER_HISTORICAL_ROOT] = previous_block_root
 func ProcessSlot(ctx context.Context, state state.BeaconState) (state.BeaconState, error) {
-	fmt.Printf("[SPEC_CALL] [State] ProcessSlot %d\n", time.Now().UnixNano())
+	helpers.LogSpecCall("transition", "ProcessSlot")
 	ctx, span := prysmTrace.StartSpan(ctx, "core.state.ProcessSlot")
 	defer span.End()
 	span.SetAttributes(prysmTrace.Int64Attribute("slot", int64(state.Slot()))) // lint:ignore uintcast -- This is OK for tracing.
@@ -263,7 +263,7 @@ func cacheBestBeaconStateOnErrFn(highestSlot primitives.Slot, key [32]byte) cust
 //	          process_epoch(state)
 //	      state.slot = Slot(state.slot + 1)
 func ProcessSlotsCore(ctx context.Context, span trace.Span, state state.BeaconState, slot primitives.Slot, fn customProcessingFn) (state.BeaconState, error) {
-	fmt.Printf("[SPEC_CALL] [State] ProcessSlotsCore %d\n", time.Now().UnixNano())
+	helpers.LogSpecCall("transition", "ProcessSlotsCore")
 	var err error
 	for state.Slot() < slot {
 		if fn != nil {

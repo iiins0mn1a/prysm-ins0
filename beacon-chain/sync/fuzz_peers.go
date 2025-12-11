@@ -2,13 +2,15 @@ package sync
 
 import (
 	"context"
-	"math/rand"
+	"errors"
+	"fmt"
 	"time"
 
 	fuzz "github.com/google/gofuzz"
 	libp2ppeer "github.com/libp2p/go-libp2p/core/peer"
 	"github.com/prysmaticlabs/prysm/v5/beacon-chain/p2p"
 	p2ptypes "github.com/prysmaticlabs/prysm/v5/beacon-chain/p2p/types"
+	cryptorand "github.com/prysmaticlabs/prysm/v5/crypto/rand"
 	pb "github.com/prysmaticlabs/prysm/v5/proto/prysm/v1alpha1"
 )
 
@@ -20,12 +22,14 @@ func (s *Service) startPeerFuzzLoop(ctx context.Context, id libp2ppeer.ID) {
 	// block the p2p connection handler, even if the caller forgets
 	// to spawn a goroutine.
 	go s.peerFuzzRoutine(ctx, id)
+	// Quick Return
 }
 
 // peerFuzzRoutine 是 PoS 中针对单个 peer 的基础 fuzzer 循环。
 // 它会周期性地从该 peer 的历史请求中选取一些种子请求，进行轻量变异后重新发送。
 func (s *Service) peerFuzzRoutine(ctx context.Context, id libp2ppeer.ID) {
 	// 简单的频率控制：每 10ms 尝试一次。
+	fmt.Printf("start Peer Fuzz Loop for peer %s\n", id.String())
 	ticker := time.NewTicker(10 * time.Millisecond)
 	defer ticker.Stop()
 
@@ -50,7 +54,11 @@ func (s *Service) peerFuzzRoutine(ctx context.Context, id libp2ppeer.ID) {
 				"BeaconBlocksByRangeReqMsgs",
 				"BeaconBlocksByRootReqMsgs",
 			}
-			cat := categories[rand.Intn(len(categories))]
+			idx, err := randIndex(len(categories))
+			if err != nil {
+				continue
+			}
+			cat := categories[idx]
 
 			switch cat {
 			case "BeaconBlocksByRangeReqMsgs":
@@ -75,7 +83,11 @@ func fuzzBeaconBlocksByRangeReq(ctx context.Context, s *Service, id libp2ppeer.I
 	if len(seeds) == 0 {
 		return
 	}
-	orig := seeds[rand.Intn(len(seeds))]
+	idx, err := randIndex(len(seeds))
+	if err != nil {
+		return
+	}
+	orig := seeds[idx]
 	if orig == nil {
 		return
 	}
@@ -87,7 +99,9 @@ func fuzzBeaconBlocksByRangeReq(ctx context.Context, s *Service, id libp2ppeer.I
 		orig.Count = 1
 	}
 
-	_, _ = SendBeaconBlocksByRangeRequest(ctx, s.cfg.chain, s.cfg.p2p, id, orig, nil)
+	if _, err := SendBeaconBlocksByRangeRequest(ctx, s.cfg.chain, s.cfg.p2p, id, orig, nil); err != nil {
+		// ignore errors — fuzzing may intentionally send invalid requests
+	}
 }
 
 func fuzzBeaconBlocksByRootReq(ctx context.Context, s *Service, id libp2ppeer.ID, recs []p2p.RecordedMessage, f *fuzz.Fuzzer) {
@@ -102,7 +116,11 @@ func fuzzBeaconBlocksByRootReq(ctx context.Context, s *Service, id libp2ppeer.ID
 	if len(seeds) == 0 {
 		return
 	}
-	orig := seeds[rand.Intn(len(seeds))]
+	idx, err := randIndex(len(seeds))
+	if err != nil {
+		return
+	}
+	orig := seeds[idx]
 	if orig == nil || len(*orig) == 0 {
 		return
 	}
@@ -110,5 +128,17 @@ func fuzzBeaconBlocksByRootReq(ctx context.Context, s *Service, id libp2ppeer.ID
 	// 对原始请求进行扰动，制造不同的 root 组合。
 	f.Fuzz(orig)
 
-	_, _ = SendBeaconBlocksByRootRequest(ctx, s.cfg.clock, s.cfg.p2p, id, orig, nil)
+	if _, err := SendBeaconBlocksByRootRequest(ctx, s.cfg.clock, s.cfg.p2p, id, orig, nil); err != nil {
+		// ignore errors — fuzzing may intentionally send invalid requests
+	}
+}
+
+// randIndex returns a crypto-strong random index in [0, n).
+// Uses a deterministic generator for performance (fuzzing doesn't require CSPRNG).
+func randIndex(n int) (int, error) {
+	if n <= 0 {
+		return 0, errors.New("invalid range: n must be positive")
+	}
+	randGen := cryptorand.NewDeterministicGenerator()
+	return randGen.Intn(n), nil
 }

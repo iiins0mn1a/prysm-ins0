@@ -32,6 +32,9 @@ go_library(
         "topics.go",
         "utils.go",
         "watch_peers.go",
+        "fuzz_recorder.go",
+        "fuzz_categories.go",
+        "fuzz_broadcast_hooks.go",
     ],
     importpath = "github.com/prysmaticlabs/prysm/v5/beacon-chain/p2p",
     visibility = [

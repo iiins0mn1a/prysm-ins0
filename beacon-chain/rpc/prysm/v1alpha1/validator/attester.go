@@ -2,8 +2,6 @@ package validator
 
 import (
 	"context"
-	"fmt"
-	"time"
 
 	"github.com/prysmaticlabs/prysm/v5/beacon-chain/cache"
 	"github.com/prysmaticlabs/prysm/v5/beacon-chain/core/feed"
@@ -139,7 +137,7 @@ func (vs *Server) SubscribeCommitteeSubnets(ctx context.Context, req *ethpb.Comm
 }
 
 func (vs *Server) proposeAtt(ctx context.Context, att ethpb.Att, committee primitives.CommitteeIndex) (*ethpb.AttestResponse, error) {
-	fmt.Printf("[SPEC_CALL] [Vote] proposeAtt %d\n", time.Now().UnixNano())
+	helpers.LogSpecCall("validator_rpc", "ProposeAttestation")
 	if _, err := bls.SignatureFromBytes(att.GetSignature()); err != nil {
 		return nil, status.Error(codes.InvalidArgument, "Incorrect attestation signature")
 	}

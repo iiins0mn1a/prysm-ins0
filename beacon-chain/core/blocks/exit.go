@@ -3,7 +3,6 @@ package blocks
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/pkg/errors"
 	"github.com/prysmaticlabs/prysm/v5/beacon-chain/core/helpers"
@@ -52,7 +51,7 @@ func ProcessVoluntaryExits(
 	beaconState state.BeaconState,
 	exits []*ethpb.SignedVoluntaryExit,
 ) (state.BeaconState, error) {
-	fmt.Printf("[SPEC_CALL] [Registry] ProcessVoluntaryExits %d\n", time.Now().UnixNano())
+	helpers.LogSpecCall("blocks", "ProcessVoluntaryExits")
 	// Avoid calculating the epoch churn if no exits exist.
 	if len(exits) == 0 {
 		return beaconState, nil

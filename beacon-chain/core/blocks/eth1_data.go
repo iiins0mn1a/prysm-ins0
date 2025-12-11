@@ -4,9 +4,8 @@ import (
 	"bytes"
 	"context"
 	"errors"
-	"fmt"
-	"time"
 
+	"github.com/prysmaticlabs/prysm/v5/beacon-chain/core/helpers"
 	"github.com/prysmaticlabs/prysm/v5/beacon-chain/state"
 	"github.com/prysmaticlabs/prysm/v5/config/params"
 	ethpb "github.com/prysmaticlabs/prysm/v5/proto/prysm/v1alpha1"
@@ -23,7 +22,7 @@ import (
 //	 if state.eth1_data_votes.count(body.eth1_data) * 2 > EPOCHS_PER_ETH1_VOTING_PERIOD * SLOTS_PER_EPOCH:
 //	     state.eth1_data = body.eth1_data
 func ProcessEth1DataInBlock(_ context.Context, beaconState state.BeaconState, eth1Data *ethpb.Eth1Data) (state.BeaconState, error) {
-	fmt.Printf("[SPEC_CALL] [Eth1] ProcessEth1DataInBlock %d\n", time.Now().UnixNano())
+	helpers.LogSpecCall("blocks", "ProcessEth1DataInBlock")
 	if beaconState == nil || beaconState.IsNil() {
 		return nil, errors.New("nil state")
 	}
