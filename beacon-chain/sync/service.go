@@ -227,7 +227,14 @@ func (s *Service) Start() {
 	go s.registerHandlers()
 
 	// Register connection and disconnection handlers.
-	s.cfg.p2p.AddConnectionHandler(s.reValidatePeer, s.sendGoodbye, s.startPeerFuzzLoop)
+	var fuzzHandler func(context.Context, libp2ppeer.ID)
+	if p2p.EnableFuzzing {
+		fuzzHandler = s.startPeerFuzzLoop
+	} else {
+		// No-op handler when fuzzing is disabled
+		fuzzHandler = func(context.Context, libp2ppeer.ID) {}
+	}
+	s.cfg.p2p.AddConnectionHandler(s.reValidatePeer, s.sendGoodbye, fuzzHandler)
 	s.cfg.p2p.AddDisconnectionHandler(func(_ context.Context, _ libp2ppeer.ID) error {
 		// no-op
 		return nil

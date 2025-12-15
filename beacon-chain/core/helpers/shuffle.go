@@ -71,7 +71,7 @@ func UnShuffledIndex(index primitives.ValidatorIndex, indexCount uint64, seed [3
 //
 //	 return index
 func ComputeShuffledIndex(index primitives.ValidatorIndex, indexCount uint64, seed [32]byte, shuffle bool) (primitives.ValidatorIndex, error) {
-	LogSpecCall("shuffle", "ComputeShuffledIndex")
+	// LogSpecCall("shuffle", "ComputeShuffledIndex")
 	if params.BeaconConfig().ShuffleRoundCount == 0 {
 		return index, nil
 	}

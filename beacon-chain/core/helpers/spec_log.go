@@ -6,9 +6,12 @@ import (
 	"path/filepath"
 	"sync"
 	"time"
+
+	"github.com/prysmaticlabs/prysm/v5/io/file"
 )
 
 const specLogRoot = "/home/ins0/Repos/Event-Driven-Testnet/shadow-ethereum/spec.log"
+const specLogNodeEnv = "SPEC_LOG_NODE"
 
 type specLogEntry struct {
 	Call   string `json:"call"`
@@ -35,8 +38,9 @@ func LogSpecCall(module, call string) {
 		return
 	}
 
-	dir := filepath.Join(specLogRoot, module)
-	if err := os.MkdirAll(dir, 0o755); err != nil {
+	nodeDir := resolveSpecLogNode()
+	dir := filepath.Join(specLogRoot, nodeDir, module)
+	if err := file.MkdirAll(dir); err != nil {
 		return
 	}
 	logPath := filepath.Join(dir, call+".log")
@@ -60,7 +64,26 @@ func LogSpecCall(module, call string) {
 	if err != nil {
 		return
 	}
-	defer f.Close()
+	defer func() {
+		if err := f.Close(); err != nil {
+			// best-effort close; ignore error to keep logging lightweight
+		}
+	}()
 
-	_, _ = f.Write(payload)
+	if _, err := f.Write(payload); err != nil {
+		return
+	}
+}
+
+// resolveSpecLogNode picks node identifier for multi-node setups:
+// 1) SPEC_LOG_NODE env var if set (caller's responsibility to ensure uniqueness);
+// 2) hostname fallback; 3) "default" if hostname unavailable.
+func resolveSpecLogNode() string {
+	if v := os.Getenv(specLogNodeEnv); v != "" {
+		return v
+	}
+	if h, err := os.Hostname(); err == nil && h != "" {
+		return h
+	}
+	return "default"
 }

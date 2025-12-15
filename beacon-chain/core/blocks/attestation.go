@@ -27,6 +27,7 @@ func ProcessAttestationsNoVerifySignature(
 	beaconState state.BeaconState,
 	b interfaces.ReadOnlyBeaconBlock,
 ) (state.BeaconState, error) {
+	helpers.LogSpecCall("block", "ProcessAttestationsNoVerifySignature")
 	if b == nil || b.IsNil() {
 		return nil, blocks.ErrNilBeaconBlock
 	}
@@ -171,6 +172,7 @@ func ProcessAttestationNoVerifySignature(
 	beaconState state.BeaconState,
 	att ethpb.Att,
 ) (state.BeaconState, error) {
+	helpers.LogSpecCall("block", "ProcessAttestationNoVerifySignature")
 	ctx, span := trace.StartSpan(ctx, "core.ProcessAttestationNoVerifySignature")
 	defer span.End()
 

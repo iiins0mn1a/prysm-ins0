@@ -25,6 +25,7 @@ func ProcessAttestations(
 	vp []*Validator,
 	pBal *Balance,
 ) ([]*Validator, *Balance, error) {
+	helpers.LogSpecCall("block", "ProcessAttestations")
 	ctx, span := trace.StartSpan(ctx, "precomputeEpoch.ProcessAttestations")
 	defer span.End()
 

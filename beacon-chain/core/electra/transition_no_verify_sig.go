@@ -3,10 +3,10 @@ package electra
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/pkg/errors"
 	"github.com/prysmaticlabs/prysm/v5/beacon-chain/core/blocks"
+	"github.com/prysmaticlabs/prysm/v5/beacon-chain/core/helpers"
 	v "github.com/prysmaticlabs/prysm/v5/beacon-chain/core/validators"
 	"github.com/prysmaticlabs/prysm/v5/beacon-chain/state"
 	"github.com/prysmaticlabs/prysm/v5/consensus-types/interfaces"
@@ -52,7 +52,7 @@ func ProcessOperations(
 	ctx context.Context,
 	st state.BeaconState,
 	block interfaces.ReadOnlyBeaconBlock) (state.BeaconState, error) {
-	helpers.LogSpecCall("electra", "ProcessOperationsNoVerifySig")
+	helpers.LogSpecCall("block", "ProcessOperations")
 	// 6110 validations are in VerifyOperationLengths
 	bb := block.Body()
 	// Electra extends the altair operations.

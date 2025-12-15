@@ -8,6 +8,7 @@ import (
 	"github.com/prysmaticlabs/prysm/v5/beacon-chain/core/altair"
 	e "github.com/prysmaticlabs/prysm/v5/beacon-chain/core/epoch"
 	"github.com/prysmaticlabs/prysm/v5/beacon-chain/core/epoch/precompute"
+	"github.com/prysmaticlabs/prysm/v5/beacon-chain/core/helpers"
 	"github.com/prysmaticlabs/prysm/v5/beacon-chain/state"
 	"github.com/prysmaticlabs/prysm/v5/config/params"
 	"github.com/prysmaticlabs/prysm/v5/consensus-types/interfaces"
@@ -50,6 +51,7 @@ var (
 //	    process_slashings_reset(state)
 //	    process_randao_mixes_reset(state)
 func ProcessEpoch(ctx context.Context, state state.BeaconState) error {
+	helpers.LogSpecCall("epoch", "electra.ProcessEpoch")
 	_, span := trace.StartSpan(ctx, "electra.ProcessEpoch")
 	defer span.End()
 

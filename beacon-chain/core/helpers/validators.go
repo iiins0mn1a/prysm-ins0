@@ -365,7 +365,7 @@ func BeaconProposerIndexAtSlot(ctx context.Context, state state.ReadOnlyBeaconSt
 //	          return candidate_index
 //	      i += 1
 func ComputeProposerIndex(bState state.ReadOnlyBeaconState, activeIndices []primitives.ValidatorIndex, seed [32]byte) (primitives.ValidatorIndex, error) {
-	LogSpecCall("validators", "ComputeProposerIndex")
+	// LogSpecCall("validators", "ComputeProposerIndex")
 	length := uint64(len(activeIndices))
 	if length == 0 {
 		return 0, errors.New("empty active indices list")

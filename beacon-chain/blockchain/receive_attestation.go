@@ -168,6 +168,7 @@ func (s *Service) UpdateHead(ctx context.Context, proposingSlot primitives.Slot)
 
 // This processes fork choice attestations from the pool to account for validator votes and fork choice.
 func (s *Service) processAttestations(ctx context.Context, disparity time.Duration) {
+	helpers.LogSpecCall("block", "processAttestations")
 	atts := s.cfg.AttPool.ForkchoiceAttestations()
 	for _, a := range atts {
 		// Based on the spec, don't process the attestation until the subsequent slot.

@@ -224,6 +224,7 @@ func ProcessRewardsAndPenaltiesPrecompute(
 	bal *precompute.Balance,
 	vals []*precompute.Validator,
 ) (state.BeaconState, error) {
+	helpers.LogSpecCall("epoch", "altair.ProcessRewardsAndPenaltiesPrecompute")
 	// Don't process rewards and penalties in genesis epoch.
 	cfg := params.BeaconConfig()
 	if time.CurrentEpoch(beaconState) == cfg.GenesisEpoch {

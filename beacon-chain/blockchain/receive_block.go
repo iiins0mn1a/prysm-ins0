@@ -62,7 +62,7 @@ type SlashingReceiver interface {
 //  2. Apply fork choice to the processed block
 //  3. Save latest head info
 func (s *Service) ReceiveBlock(ctx context.Context, block interfaces.ReadOnlySignedBeaconBlock, blockRoot [32]byte, avs das.AvailabilityStore) error {
-	helpers.LogSpecCall("blockchain", "ReceiveBlock")
+	helpers.LogSpecCall("forkchoice", "ReceiveBlock")
 	ctx, span := trace.StartSpan(ctx, "blockChain.ReceiveBlock")
 	defer span.End()
 	// Return early if the block has been synced
@@ -288,6 +288,7 @@ func (s *Service) executePostFinalizationTasks(ctx context.Context, finalizedSta
 // the state, performing batch verification of all collected signatures and then performing the appropriate
 // actions for a block post-transition.
 func (s *Service) ReceiveBlockBatch(ctx context.Context, blocks []blocks.ROBlock, avs das.AvailabilityStore) error {
+	helpers.LogSpecCall("forkchoice", "ReceiveBlockBatch")
 	ctx, span := trace.StartSpan(ctx, "blockChain.ReceiveBlockBatch")
 	defer span.End()
 

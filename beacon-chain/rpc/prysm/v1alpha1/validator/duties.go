@@ -19,6 +19,7 @@ import (
 // GetDuties returns the duties assigned to a list of validators specified
 // in the request object.
 func (vs *Server) GetDuties(ctx context.Context, req *ethpb.DutiesRequest) (*ethpb.DutiesResponse, error) {
+	// helpers.LogSpecCall("validator", "GetDuties") // Commented: This is a helper function for querying duties, not core validator behavior
 	if vs.SyncChecker.Syncing() {
 		return nil, status.Error(codes.Unavailable, "Syncing to latest head, not ready to respond")
 	}

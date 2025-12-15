@@ -89,6 +89,7 @@ func (s *Service) processPendingAtts(ctx context.Context) error {
 }
 
 func (s *Service) processAttestations(ctx context.Context, attestations []ethpb.SignedAggregateAttAndProof) {
+	helpers.LogSpecCall("block", "sync.processAttestations")
 	for _, signedAtt := range attestations {
 		aggregate := signedAtt.AggregateAttestationAndProof().AggregateVal()
 		data := aggregate.GetData()

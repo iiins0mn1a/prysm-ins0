@@ -31,7 +31,7 @@ import (
 //	        ):
 //	            validator.effective_balance = min(balance - balance % EFFECTIVE_BALANCE_INCREMENT, EFFECTIVE_BALANCE_LIMIT)
 func ProcessEffectiveBalanceUpdates(st state.BeaconState) error {
-	helpers.LogSpecCall("electra", "ProcessEffectiveBalanceUpdates")
+	helpers.LogSpecCall("epoch", "electra.ProcessEffectiveBalanceUpdates")
 	effBalanceInc := params.BeaconConfig().EffectiveBalanceIncrement
 	hysteresisInc := effBalanceInc / params.BeaconConfig().HysteresisQuotient
 	downwardThreshold := hysteresisInc * params.BeaconConfig().HysteresisDownwardMultiplier

@@ -58,7 +58,7 @@ import (
 //
 // This method differs from the spec so as to process deposits beforehand instead of the end of the function.
 func GenesisBeaconState(ctx context.Context, deposits []*ethpb.Deposit, genesisTime uint64, eth1Data *ethpb.Eth1Data) (state.BeaconState, error) {
-	helpers.LogSpecCall("transition", "GenesisBeaconState")
+	helpers.LogSpecCall("genesis", "GenesisBeaconState")
 	st, err := EmptyGenesisState()
 	if err != nil {
 		return nil, err

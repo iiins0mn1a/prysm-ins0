@@ -7,6 +7,11 @@ import (
 	"github.com/libp2p/go-libp2p/core/peer"
 )
 
+// EnableFuzzing controls whether the fuzzing framework is active.
+// Set to false to disable all fuzzing-related message recording and fuzz routines.
+// To disable fuzzing, change this to false or comment out the line below.
+const EnableFuzzing = false
+
 // RecordedMessage captures the minimal information required to
 // later re-use or mutate an outgoing message to a peer.
 type RecordedMessage struct {

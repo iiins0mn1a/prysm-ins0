@@ -41,7 +41,7 @@ func ProcessAttesterSlashings(
 	slashings []ethpb.AttSlashing,
 	slashFunc slashValidatorFunc,
 ) (state.BeaconState, error) {
-	helpers.LogSpecCall("blocks", "ProcessAttesterSlashings")
+	helpers.LogSpecCall("block", "ProcessAttesterSlashings")
 	var err error
 	for _, slashing := range slashings {
 		beaconState, err = ProcessAttesterSlashing(ctx, beaconState, slashing, slashFunc)

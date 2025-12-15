@@ -22,6 +22,7 @@ func ProcessRewardsAndPenaltiesPrecompute(
 	attRewardsFunc attesterRewardsFunc,
 	proRewardsFunc proposerRewardsFunc,
 ) (state.BeaconState, error) {
+	helpers.LogSpecCall("epoch", "ProcessRewardsAndPenaltiesPrecompute")
 	// Can't process rewards and penalties in genesis epoch.
 	if time.CurrentEpoch(state) == 0 {
 		return state, nil

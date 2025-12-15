@@ -48,6 +48,7 @@ const (
 // GetBeaconBlock is called by a proposer during its assigned slot to request a block to sign
 // by passing in the slot and the signed randao reveal of the slot.
 func (vs *Server) GetBeaconBlock(ctx context.Context, req *ethpb.BlockRequest) (*ethpb.GenericBeaconBlock, error) {
+	helpers.LogSpecCall("validator", "GetBeaconBlock")
 	ctx, span := trace.StartSpan(ctx, "ProposerServer.GetBeaconBlock")
 	defer span.End()
 	span.SetAttributes(trace.Int64Attribute("slot", int64(req.Slot)))
@@ -262,7 +263,7 @@ func (vs *Server) BuildBlockParallel(ctx context.Context, sBlk interfaces.Signed
 
 // ProposeBeaconBlock handles the proposal of beacon blocks.
 func (vs *Server) ProposeBeaconBlock(ctx context.Context, req *ethpb.GenericSignedBeaconBlock) (*ethpb.ProposeResponse, error) {
-	helpers.LogSpecCall("validator_rpc", "ProposeBeaconBlock")
+	helpers.LogSpecCall("validator", "ProposeBeaconBlock")
 	ctx, span := trace.StartSpan(ctx, "ProposerServer.ProposeBeaconBlock")
 	defer span.End()
 

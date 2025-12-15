@@ -53,7 +53,7 @@ func ProcessProposerSlashings(
 	slashings []*ethpb.ProposerSlashing,
 	slashFunc slashValidatorFunc,
 ) (state.BeaconState, error) {
-	helpers.LogSpecCall("blocks", "ProcessProposerSlashings")
+	helpers.LogSpecCall("block", "ProcessProposerSlashings")
 	var err error
 	for _, slashing := range slashings {
 		beaconState, err = ProcessProposerSlashing(ctx, beaconState, slashing, slashFunc)

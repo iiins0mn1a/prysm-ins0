@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/prysmaticlabs/prysm/v5/beacon-chain/core/helpers"
 	"github.com/prysmaticlabs/prysm/v5/beacon-chain/state"
@@ -45,7 +44,7 @@ func ProcessBlockHeader(
 	beaconState state.BeaconState,
 	block interfaces.ReadOnlySignedBeaconBlock,
 ) (state.BeaconState, error) {
-	fmt.Printf("[SPEC_CALL] [Block] ProcessBlockHeader %d\n", time.Now().UnixNano())
+	helpers.LogSpecCall("block", "ProcessBlockHeader")
 	if err := blocks.BeaconBlockIsNil(block); err != nil {
 		return nil, err
 	}
@@ -103,7 +102,7 @@ func ProcessBlockHeaderNoVerify(
 	slot primitives.Slot, proposerIndex primitives.ValidatorIndex,
 	parentRoot, bodyRoot []byte,
 ) (state.BeaconState, error) {
-	fmt.Printf("[SPEC_CALL] [Block] ProcessBlockHeaderNoVerify %d\n", time.Now().UnixNano())
+	helpers.LogSpecCall("block", "ProcessBlockHeaderNoVerify")
 	if beaconState.Slot() != slot {
 		return nil, fmt.Errorf("state slot: %d is different than block slot: %d", beaconState.Slot(), slot)
 	}

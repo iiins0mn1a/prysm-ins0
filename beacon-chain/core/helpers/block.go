@@ -22,7 +22,7 @@ import (
 //	  assert slot < state.slot <= slot + SLOTS_PER_HISTORICAL_ROOT
 //	  return state.block_roots[slot % SLOTS_PER_HISTORICAL_ROOT]
 func BlockRootAtSlot(state state.ReadOnlyBeaconState, slot primitives.Slot) ([]byte, error) {
-	LogSpecCall("block", "BlockRootAtSlot")
+	// LogSpecCall("block", "BlockRootAtSlot")
 	if math.MaxUint64-slot < params.BeaconConfig().SlotsPerHistoricalRoot {
 		return []byte{}, errors.New("slot overflows uint64")
 	}
@@ -51,7 +51,7 @@ func StateRootAtSlot(state state.ReadOnlyBeaconState, slot primitives.Slot) ([]b
 //	  """
 //	  return get_block_root_at_slot(state, compute_start_slot_at_epoch(epoch))
 func BlockRoot(state state.ReadOnlyBeaconState, epoch primitives.Epoch) ([]byte, error) {
-	LogSpecCall("block", "BlockRoot")
+	// LogSpecCall("block", "BlockRoot")
 	s, err := slots.EpochStart(epoch)
 	if err != nil {
 		return nil, err

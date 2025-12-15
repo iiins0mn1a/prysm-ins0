@@ -36,7 +36,7 @@ import (
 //	             if is_eligible_for_activation(state, validator):
 //	                 validator.activation_epoch = activation_epoch
 func ProcessRegistryUpdates(ctx context.Context, st state.BeaconState) error {
-	helpers.LogSpecCall("registry", "ProcessRegistryUpdates")
+	helpers.LogSpecCall("epoch", "electra.ProcessRegistryUpdates")
 	currentEpoch := time.CurrentEpoch(st)
 	ejectionBal := params.BeaconConfig().EjectionBalance
 	activationEpoch := helpers.ActivationExitEpoch(currentEpoch)

@@ -6,8 +6,6 @@ package validators
 
 import (
 	"context"
-	"fmt"
-	"time"
 
 	"github.com/pkg/errors"
 	"github.com/prysmaticlabs/prysm/v5/beacon-chain/core/helpers"
@@ -155,7 +153,7 @@ func SlashValidator(
 	ctx context.Context,
 	s state.BeaconState,
 	slashedIdx primitives.ValidatorIndex) (state.BeaconState, error) {
-	fmt.Printf("[SPEC_CALL] [Slash] SlashValidator %d\n", time.Now().UnixNano())
+	// fmt.Printf("[SPEC_CALL] [Slash] SlashValidator %d\n", time.Now().UnixNano())
 	maxExitEpoch, churn := MaxExitEpochAndChurn(s)
 	s, _, err := InitiateValidatorExit(ctx, s, slashedIdx, maxExitEpoch, churn)
 	if err != nil && !errors.Is(err, ErrValidatorAlreadyExited) {

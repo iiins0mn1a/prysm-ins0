@@ -30,7 +30,7 @@ import (
 //	process_participation_flag_updates(state)  # [New in Altair]
 //	process_sync_committee_updates(state)  # [New in Altair]
 func ProcessEpoch(ctx context.Context, state state.BeaconState) error {
-	helpers.LogSpecCall("altair", "ProcessEpoch")
+	helpers.LogSpecCall("epoch", "altair.ProcessEpoch")
 	ctx, span := trace.StartSpan(ctx, "altair.ProcessEpoch")
 	defer span.End()
 

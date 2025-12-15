@@ -130,7 +130,12 @@ func NewService(ctx context.Context, cfg *Config) (*Service, error) {
 		isPreGenesis: true,
 		joinedTopics: make(map[string]*pubsub.Topic, len(gossipTopicMappings)),
 		subnetsLock:  make(map[uint64]*sync.RWMutex),
-		fuzzRecorder: NewPeerMessageRecorder(),
+		fuzzRecorder: func() *PeerMessageRecorder {
+			if EnableFuzzing {
+				return NewPeerMessageRecorder()
+			}
+			return nil
+		}(),
 	}
 
 	ipAddr := prysmnetwork.IPAddr()

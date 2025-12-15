@@ -48,6 +48,7 @@ import (
 //	     validator = state.validators[index]
 //	     validator.activation_epoch = compute_activation_exit_epoch(get_current_epoch(state))
 func ProcessRegistryUpdates(ctx context.Context, st state.BeaconState) (state.BeaconState, error) {
+	helpers.LogSpecCall("epoch", "ProcessRegistryUpdates")
 	currentEpoch := beacontime.CurrentEpoch(st)
 	var err error
 	ejectionBal := params.BeaconConfig().EjectionBalance
@@ -211,7 +212,7 @@ func ProcessSlashings(st state.BeaconState, slashingMultiplier uint64) (state.Be
 //	  if next_epoch % EPOCHS_PER_ETH1_VOTING_PERIOD == 0:
 //	      state.eth1_data_votes = []
 func ProcessEth1DataReset(state state.BeaconState) (state.BeaconState, error) {
-	helpers.LogSpecCall("epoch", "ProcessEth1DataReset")
+	helpers.LogSpecCall("block", "ProcessEth1DataReset")
 	currentEpoch := beacontime.CurrentEpoch(state)
 	nextEpoch := currentEpoch + 1
 
@@ -242,6 +243,7 @@ func ProcessEth1DataReset(state state.BeaconState) (state.BeaconState, error) {
 //	      ):
 //	          validator.effective_balance = min(balance - balance % EFFECTIVE_BALANCE_INCREMENT, MAX_EFFECTIVE_BALANCE)
 func ProcessEffectiveBalanceUpdates(st state.BeaconState) (state.BeaconState, error) {
+	helpers.LogSpecCall("epoch", "ProcessEffectiveBalanceUpdates")
 	effBalanceInc := params.BeaconConfig().EffectiveBalanceIncrement
 	maxEffBalance := params.BeaconConfig().MaxEffectiveBalance
 	hysteresisInc := effBalanceInc / params.BeaconConfig().HysteresisQuotient
@@ -321,7 +323,7 @@ func ProcessSlashingsReset(state state.BeaconState) (state.BeaconState, error) {
 //	  # Set randao mix
 //	  state.randao_mixes[next_epoch % EPOCHS_PER_HISTORICAL_VECTOR] = get_randao_mix(state, current_epoch)
 func ProcessRandaoMixesReset(state state.BeaconState) (state.BeaconState, error) {
-	helpers.LogSpecCall("epoch", "ProcessRandaoMixesReset")
+	helpers.LogSpecCall("block", "ProcessRandaoMixesReset")
 	currentEpoch := beacontime.CurrentEpoch(state)
 	nextEpoch := currentEpoch + 1
 
@@ -348,6 +350,7 @@ func ProcessRandaoMixesReset(state state.BeaconState) (state.BeaconState, error)
 // ProcessHistoricalDataUpdate processes the updates to historical data during epoch processing.
 // From Capella onward, per spec,state's historical summaries are updated instead of historical roots.
 func ProcessHistoricalDataUpdate(state state.BeaconState) (state.BeaconState, error) {
+	helpers.LogSpecCall("epoch", "ProcessHistoricalDataUpdate")
 	currentEpoch := beacontime.CurrentEpoch(state)
 	nextEpoch := currentEpoch + 1
 

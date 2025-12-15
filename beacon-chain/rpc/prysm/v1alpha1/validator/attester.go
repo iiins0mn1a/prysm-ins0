@@ -21,6 +21,7 @@ import (
 // GetAttestationData requests that the beacon node produce an attestation data object,
 // which the validator acting as an attester will then sign.
 func (vs *Server) GetAttestationData(ctx context.Context, req *ethpb.AttestationDataRequest) (*ethpb.AttestationData, error) {
+	// helpers.LogSpecCall("validator", "GetAttestationData") // Commented: This is a helper function for data retrieval, not core validator behavior
 	ctx, span := trace.StartSpan(ctx, "AttesterServer.RequestAttestation")
 	defer span.End()
 	span.SetAttributes(
@@ -41,6 +42,7 @@ func (vs *Server) GetAttestationData(ctx context.Context, req *ethpb.Attestation
 // ProposeAttestation is a function called by an attester to vote
 // on a block via an attestation object as defined in the Ethereum specification.
 func (vs *Server) ProposeAttestation(ctx context.Context, att *ethpb.Attestation) (*ethpb.AttestResponse, error) {
+	helpers.LogSpecCall("validator", "ProposeAttestation")
 	ctx, span := trace.StartSpan(ctx, "AttesterServer.ProposeAttestation")
 	defer span.End()
 
@@ -137,7 +139,6 @@ func (vs *Server) SubscribeCommitteeSubnets(ctx context.Context, req *ethpb.Comm
 }
 
 func (vs *Server) proposeAtt(ctx context.Context, att ethpb.Att, committee primitives.CommitteeIndex) (*ethpb.AttestResponse, error) {
-	helpers.LogSpecCall("validator_rpc", "ProposeAttestation")
 	if _, err := bls.SignatureFromBytes(att.GetSignature()); err != nil {
 		return nil, status.Error(codes.InvalidArgument, "Incorrect attestation signature")
 	}

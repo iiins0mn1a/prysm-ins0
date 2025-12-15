@@ -33,7 +33,7 @@ func ProcessRandao(
 	beaconState state.BeaconState,
 	b interfaces.ReadOnlySignedBeaconBlock,
 ) (state.BeaconState, error) {
-	helpers.LogSpecCall("blocks", "ProcessRandao")
+	helpers.LogSpecCall("block", "ProcessRandao")
 	if err := blocks.BeaconBlockIsNil(b); err != nil {
 		return nil, err
 	}

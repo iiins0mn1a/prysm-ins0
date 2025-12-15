@@ -51,7 +51,7 @@ func ProcessVoluntaryExits(
 	beaconState state.BeaconState,
 	exits []*ethpb.SignedVoluntaryExit,
 ) (state.BeaconState, error) {
-	helpers.LogSpecCall("blocks", "ProcessVoluntaryExits")
+	helpers.LogSpecCall("block", "ProcessVoluntaryExits")
 	// Avoid calculating the epoch churn if no exits exist.
 	if len(exits) == 0 {
 		return beaconState, nil

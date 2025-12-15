@@ -82,7 +82,7 @@ func (f *ForkChoice) Head(
 // ProcessAttestation processes attestation for vote accounting, it iterates around validator indices
 // and update their votes accordingly.
 func (f *ForkChoice) ProcessAttestation(ctx context.Context, validatorIndices []uint64, blockRoot [32]byte, targetEpoch primitives.Epoch) {
-	helpers.LogSpecCall("forkchoice", "ProcessAttestation")
+	helpers.LogSpecCall("block", "forkchoice.ProcessAttestation")
 	_, span := trace.StartSpan(ctx, "doublyLinkedForkchoice.ProcessAttestation")
 	defer span.End()
 

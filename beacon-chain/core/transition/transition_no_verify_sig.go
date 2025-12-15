@@ -48,7 +48,7 @@ func ExecuteStateTransitionNoVerifyAnySig(
 	st state.BeaconState,
 	signed interfaces.ReadOnlySignedBeaconBlock,
 ) (*bls.SignatureBatch, state.BeaconState, error) {
-	helpers.LogSpecCall("transition", "ExecuteStateTransitionNoVerifyAnySig")
+	helpers.LogSpecCall("state", "ExecuteStateTransitionNoVerifyAnySig")
 	if ctx.Err() != nil {
 		return nil, nil, ctx.Err()
 	}
@@ -116,7 +116,7 @@ func CalculateStateRoot(
 	state state.BeaconState,
 	signed interfaces.ReadOnlySignedBeaconBlock,
 ) ([32]byte, error) {
-	helpers.LogSpecCall("transition", "CalculateStateRoot")
+	// helpers.LogSpecCall("transition", "CalculateStateRoot")
 	ctx, span := trace.StartSpan(ctx, "core.state.CalculateStateRoot")
 	defer span.End()
 	if ctx.Err() != nil {
@@ -167,7 +167,7 @@ func ProcessBlockNoVerifyAnySig(
 	st state.BeaconState,
 	signed interfaces.ReadOnlySignedBeaconBlock,
 ) (*bls.SignatureBatch, state.BeaconState, error) {
-	helpers.LogSpecCall("transition", "ProcessBlockNoVerifyAnySig")
+	helpers.LogSpecCall("block", "ProcessBlockNoVerifyAnySig")
 	ctx, span := trace.StartSpan(ctx, "core.state.ProcessBlockNoVerifyAnySig")
 	defer span.End()
 	if err := blocks.BeaconBlockIsNil(signed); err != nil {
@@ -254,7 +254,7 @@ func ProcessOperationsNoVerifyAttsSigs(
 	ctx context.Context,
 	state state.BeaconState,
 	beaconBlock interfaces.ReadOnlyBeaconBlock) (state.BeaconState, error) {
-	helpers.LogSpecCall("transition", "ProcessOperationsNoVerifyAttsSigs")
+	helpers.LogSpecCall("block", "ProcessOperationsNoVerifyAttsSigs")
 	ctx, span := trace.StartSpan(ctx, "core.state.ProcessOperationsNoVerifyAttsSigs")
 	defer span.End()
 	if beaconBlock == nil || beaconBlock.IsNil() {
@@ -304,7 +304,7 @@ func ProcessBlockForStateRoot(
 	state state.BeaconState,
 	signed interfaces.ReadOnlySignedBeaconBlock,
 ) (state.BeaconState, error) {
-	helpers.LogSpecCall("transition", "ProcessBlockForStateRoot")
+	helpers.LogSpecCall("block", "ProcessBlockForStateRoot")
 	ctx, span := trace.StartSpan(ctx, "core.state.ProcessBlockForStateRoot")
 	defer span.End()
 	if err := blocks.BeaconBlockIsNil(signed); err != nil {

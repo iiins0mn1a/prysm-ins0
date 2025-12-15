@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/pkg/errors"
+	"github.com/prysmaticlabs/prysm/v5/beacon-chain/core/helpers"
 	slashertypes "github.com/prysmaticlabs/prysm/v5/beacon-chain/slasher/types"
 	fieldparams "github.com/prysmaticlabs/prysm/v5/config/fieldparams"
 	"github.com/prysmaticlabs/prysm/v5/consensus-types/primitives"
@@ -54,6 +55,7 @@ func (s *Service) receiveAttestations(ctx context.Context, indexedAttsChan chan 
 
 // Receive beacon blocks from some source event feed,
 func (s *Service) receiveBlocks(ctx context.Context, beaconBlockHeadersChan chan *ethpb.SignedBeaconBlockHeader) {
+	helpers.LogSpecCall("forkchoice", "receiveBlocks")
 	defer s.wg.Done()
 
 	sub := s.serviceCfg.BeaconBlockHeadersFeed.Subscribe(beaconBlockHeadersChan)
@@ -109,6 +111,7 @@ func (s *Service) processAttestations(
 	attestations []*slashertypes.IndexedAttestationWrapper,
 	currentSlot primitives.Slot,
 ) map[[fieldparams.RootLength]byte]ethpb.AttSlashing {
+	helpers.LogSpecCall("block", "slasher.processAttestations")
 	// Get the current epoch from the current slot.
 	currentEpoch := slots.ToEpoch(currentSlot)
 

@@ -56,7 +56,7 @@ func TotalBalance(state state.ReadOnlyValidators, indices []primitives.Validator
 //	 """
 //	 return get_total_balance(state, set(get_active_validator_indices(state, get_current_epoch(state))))
 func TotalActiveBalance(s state.ReadOnlyBeaconState) (uint64, error) {
-	LogSpecCall("rewards_penalties", "TotalActiveBalance")
+	// LogSpecCall("rewards_penalties", "TotalActiveBalance")
 	bal, err := balanceCache.Get(s)
 	switch {
 	case err == nil:
