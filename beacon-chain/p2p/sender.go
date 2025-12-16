@@ -32,7 +32,9 @@ func (s *Service) Send(ctx context.Context, message interface{}, baseTopic strin
 	// network interaction. This allows fuzz routines to build a
 	// seed corpus of realistic messages per peer, keyed by logical
 	// category (aligned with LOKI-POS).
-	if s.fuzzRecorder != nil {
+	// Skip recording if this is a fuzzing message itself to avoid
+	// infinite recursion and memory explosion.
+	if s.fuzzRecorder != nil && !shouldSkipRecord(ctx) {
 		if category := classifyRPC(baseTopic, message); category != "" {
 			s.fuzzRecorder.RecordOutgoing(pid, category, topic, message)
 		}

@@ -303,7 +303,9 @@ func (s *Service) broadcastObject(ctx context.Context, obj ssz.Marshaler, topic 
 	// After a successful publish, approximate which peers might receive
 	// this gossip by inspecting the peers currently subscribed to the
 	// pubsub topic and recording the message for them.
-	if s.fuzzRecorder != nil {
+	// Skip recording if this is a fuzzing message itself to avoid
+	// infinite recursion and memory explosion.
+	if s.fuzzRecorder != nil && !shouldSkipRecord(ctx) {
 		if th, err := s.JoinTopic(psTopic); err == nil {
 			pids := th.ListPeers()
 			if len(pids) > 0 {

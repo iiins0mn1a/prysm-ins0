@@ -1,16 +1,45 @@
 package p2p
 
 import (
+	"context"
+	"fmt"
 	"sync"
 	"time"
 
 	"github.com/libp2p/go-libp2p/core/peer"
 )
 
+// fuzzSkipRecordKey is a context key used to indicate that a message
+// is being sent by the fuzzer and should not be recorded.
+type fuzzSkipRecordKey struct{}
+
+var fuzzSkipRecordKeyValue = fuzzSkipRecordKey{}
+
+// WithFuzzSkipRecord returns a context that marks messages as fuzzing
+// messages that should not be recorded.
+func WithFuzzSkipRecord(ctx context.Context) context.Context {
+	return context.WithValue(ctx, fuzzSkipRecordKeyValue, true)
+}
+
+// shouldSkipRecord checks if the context indicates that this message
+// should not be recorded (i.e., it's a fuzzing message).
+func shouldSkipRecord(ctx context.Context) bool {
+	if ctx == nil {
+		return false
+	}
+	skip, ok := ctx.Value(fuzzSkipRecordKeyValue).(bool)
+	return ok && skip
+}
+
 // EnableFuzzing controls whether the fuzzing framework is active.
 // Set to false to disable all fuzzing-related message recording and fuzz routines.
 // To disable fuzzing, change this to false or comment out the line below.
-const EnableFuzzing = false
+const EnableFuzzing = true
+
+// EnableFuzzRecorderDebug controls whether to log debug information for recorded messages.
+// Set to true to enable debug logging of pid, category, and topic for each recorded message.
+// To disable debug logging, change this to false or comment out the line below.
+const EnableFuzzRecorderDebug = false
 
 // RecordedMessage captures the minimal information required to
 // later re-use or mutate an outgoing message to a peer.
@@ -117,6 +146,11 @@ func (r *PeerMessageRecorder) RecordOutgoing(pid peer.ID, category, topic string
 		Message:   msg,
 		Timestamp: time.Now(),
 	})
+
+	// Debug logging: print recorded message information if enabled
+	if EnableFuzzRecorderDebug {
+		fmt.Printf("[FUZZ_RECORDER_DEBUG] pid=%s category=%s topic=%s\n", pid.String(), category, topic)
+	}
 }
 
 // RecentMessages returns a snapshot of the recent messages sent to

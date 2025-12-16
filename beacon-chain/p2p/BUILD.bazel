@@ -34,7 +34,6 @@ go_library(
         "watch_peers.go",
         "fuzz_recorder.go",
         "fuzz_categories.go",
-        "fuzz_broadcast_hooks.go",
     ],
     importpath = "github.com/prysmaticlabs/prysm/v5/beacon-chain/p2p",
     visibility = [
@@ -65,6 +64,7 @@ go_library(
         "//container/leaky-bucket:go_default_library",
         "//crypto/ecdsa:go_default_library",
         "//crypto/hash:go_default_library",
+        "//crypto/rand:go_default_library",
         "//encoding/bytesutil:go_default_library",
         "//io/file:go_default_library",
         "//math:go_default_library",
