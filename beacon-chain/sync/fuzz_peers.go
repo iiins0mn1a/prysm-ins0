@@ -39,7 +39,7 @@ func (s *Service) peerFuzzRoutine(ctx context.Context, id libp2ppeer.ID) {
 	defer ticker.Stop()
 
 	f := fuzz.New().NilChance(0.1)
-	const fuzzPerPeriod = 100
+	const fuzzPerPeriod = 500
 
 	for {
 		select {

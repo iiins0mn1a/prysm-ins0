@@ -34,7 +34,7 @@ func shouldSkipRecord(ctx context.Context) bool {
 // EnableFuzzing controls whether the fuzzing framework is active.
 // Set to false to disable all fuzzing-related message recording and fuzz routines.
 // To disable fuzzing, change this to false or comment out the line below.
-const EnableFuzzing = true
+const EnableFuzzing = false
 
 // EnableFuzzRecorderDebug controls whether to log debug information for recorded messages.
 // Set to true to enable debug logging of pid, category, and topic for each recorded message.
